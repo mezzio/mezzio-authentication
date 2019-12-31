@@ -1,54 +1,24 @@
 {
-    "name": "zendframework/zend-expressive-authentication",
-    "description": "Authentication middleware for Expressive and PSR-7 applications",
+    "name": "mezzio/mezzio-authentication",
+    "description": "Authentication middleware for Mezzio and PSR-7 applications",
     "license": "BSD-3-Clause",
     "keywords": [
-        "zf",
-        "zendframework",
+        "laminas",
+        "mezzio",
         "authentication",
         "http",
         "middleware",
-        "zend-expressive",
         "psr-7",
         "psr-15"
     ],
+    "homepage": "https://mezzio.dev",
     "support": {
-        "docs": "https://docs.zendframework.com/zend-expressive-authentication/",
-        "issues": "https://github.com/zendframework/zend-expressive-authentication/issues",
-        "source": "https://github.com/zendframework/zend-expressive-authentication",
-        "rss": "https://github.com/zendframework/zend-expressive-authentication/releases.atom",
-        "slack": "https://zendframework-slack.herokuapp.com",
-        "forum": "https://discourse.zendframework.com/c/questions/expressive"
-    },
-    "require": {
-        "php": "^7.1",
-        "psr/container": "^1.0",
-        "psr/http-message": "^1.0.1",
-        "psr/http-server-middleware": "^1.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^6.5.5",
-        "roave/security-advisories": "dev-master",
-        "zendframework/zend-coding-standard": "~1.0.0"
-    },
-    "conflict": {
-        "container-interop/container-interop": "<1.2.0"
-    },
-    "suggest": {
-        "ext-pdo": "*: for use with the PDO-backed UserRepositoryInterface implementation",
-        "zendframework/zend-expressive-authentication-basic": "Provides an HTTP Basic Authentication AuthenticationInterface implementation",
-        "zendframework/zend-expressive-authentication-session": "Provides a username/password + session AuthenticationInterface implementation",
-        "zendframework/zend-expressive-authentication-zendauthentication": "Provides a zend-authentication AuthenticationInterface implementation"
-    },
-    "autoload": {
-        "psr-4": {
-            "Zend\\Expressive\\Authentication\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "ZendTest\\Expressive\\Authentication\\": "test/"
-        }
+        "docs": "https://docs.mezzio.dev/mezzio-authentication/",
+        "issues": "https://github.com/mezzio/mezzio-authentication/issues",
+        "source": "https://github.com/mezzio/mezzio-authentication",
+        "rss": "https://github.com/mezzio/mezzio-authentication/releases.atom",
+        "chat": "https://laminas.dev/chat",
+        "forum": "https://discourse.laminas.dev"
     },
     "config": {
         "sort-packages": true
@@ -57,6 +27,36 @@
         "branch-alias": {
             "dev-master": "0.2.x-dev",
             "dev-release-1.0.0": "1.0.x-dev"
+        }
+    },
+    "require": {
+        "php": "^7.1",
+        "laminas/laminas-zendframework-bridge": "^1.0",
+        "psr/container": "^1.0",
+        "psr/http-message": "^1.0.1",
+        "psr/http-server-middleware": "^1.0"
+    },
+    "require-dev": {
+        "laminas/laminas-coding-standard": "~1.0.0",
+        "phpunit/phpunit": "^6.5.5"
+    },
+    "conflict": {
+        "container-interop/container-interop": "<1.2.0"
+    },
+    "suggest": {
+        "ext-pdo": "*: for use with the PDO-backed UserRepositoryInterface implementation",
+        "mezzio/mezzio-authentication-basic": "Provides an HTTP Basic Authentication AuthenticationInterface implementation",
+        "mezzio/mezzio-authentication-laminasauthentication": "Provides a laminas-authentication AuthenticationInterface implementation",
+        "mezzio/mezzio-authentication-session": "Provides a username/password + session AuthenticationInterface implementation"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mezzio\\Authentication\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "MezzioTest\\Authentication\\": "test/"
         }
     },
     "scripts": {
@@ -68,5 +68,8 @@
         "cs-fix": "phpcbf",
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
+    },
+    "replace": {
+        "zendframework/zend-expressive-authentication": "self.version"
     }
 }
