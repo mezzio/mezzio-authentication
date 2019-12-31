@@ -1,21 +1,22 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-authentication for the canonical source repository
- * @copyright Copyright (c) 2018 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-authentication/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-authentication for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-authentication/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-authentication/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace ZendTest\Expressive\Authentication;
+namespace MezzioTest\Authentication;
 
+use Mezzio\Authentication\Exception\InvalidConfigException;
+use Mezzio\Authentication\ResponsePrototypeTrait;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionMethod;
 use ReflectionObject;
-use Zend\Expressive\Authentication\Exception\InvalidConfigException;
-use Zend\Expressive\Authentication\ResponsePrototypeTrait;
 
 class ResponsePrototypeTraitWithoutDiactorosTest extends TestCase
 {
@@ -73,7 +74,7 @@ class ResponsePrototypeTraitWithoutDiactorosTest extends TestCase
     public function testRaisesAnExceptionIfDiactorosIsNotLoaded()
     {
         $this->expectException(InvalidConfigException::class);
-        $this->expectExceptionMessage('zendframework/zend-diactoros');
+        $this->expectExceptionMessage('laminas/laminas-diactoros');
 
         try {
             $this->method->invoke($this->class, $this->container);

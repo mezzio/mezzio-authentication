@@ -1,23 +1,24 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-authentication for the canonical source repository
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-authentication/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-authentication for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-authentication/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-authentication/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace ZendTest\Expressive\Authentication\UserRepository;
+namespace MezzioTest\Authentication\UserRepository;
 
+use Mezzio\Authentication\UserInterface;
+use Mezzio\Authentication\UserRepository\Htpasswd;
+use Mezzio\Authentication\UserRepositoryInterface;
 use PHPUnit\Framework\TestCase;
-use Zend\Expressive\Authentication\UserInterface;
-use Zend\Expressive\Authentication\UserRepositoryInterface;
-use Zend\Expressive\Authentication\UserRepository\Htpasswd;
 
 class HtpasswdTest extends TestCase
 {
     /**
-     * @expectedException Zend\Expressive\Authentication\Exception\InvalidConfigException
+     * @expectedException Mezzio\Authentication\Exception\InvalidConfigException
      */
     public function testConstructorWithNoFile()
     {
@@ -52,7 +53,7 @@ class HtpasswdTest extends TestCase
     }
 
     /**
-     * @expectedException Zend\Expressive\Authentication\Exception\RuntimeException
+     * @expectedException Mezzio\Authentication\Exception\RuntimeException
      */
     public function testAuthenticateWithInsecureHash()
     {
