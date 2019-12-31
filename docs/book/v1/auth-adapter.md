@@ -1,10 +1,10 @@
 # Authentication Adapters
 
-The authentication adapters for `zend-expressive-authentication` implement the
-interface `Zend\Expressive\Authentication\AuthenticationInterface`:
+The authentication adapters for `mezzio-authentication` implement the
+interface `Mezzio\Authentication\AuthenticationInterface`:
 
 ```php
-namespace Zend\Expressive\Authentication;
+namespace Mezzio\Authentication;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -36,16 +36,16 @@ and return an unauthorized response.
 
 We provide 4 authentication adapters:
 
-- [zend-expressive-authentication-basic](https://github.com/zendframework/zend-expressive-authentication-basic),
+- [mezzio-authentication-basic](https://github.com/mezzio/mezzio-authentication-basic),
   for [Basic Access Authentication](https://en.wikipedia.org/wiki/Basic_access_authentication),
   supporting only `bcrypt` as the password hashing algorithm to ensure best
   security.
-- [zend-expressive-authentication-session](https://github.com/zendframework/zend-expressive-authentication-session),
+- [mezzio-authentication-session](https://github.com/mezzio/mezzio-authentication-session),
   for authenticating username/password credential pairs and persisting them
   between requests via PHP sessions.
-- [zend-expressive-authentication-zendauthentication](https://github.com/zendframework/zend-expressive-authentication-zendauthentication),
-  supporting the [zend-authentication](https://github.com/zendframework/zend-authentication)
+- [mezzio-authentication-laminasauthentication](https://github.com/mezzio/mezzio-authentication-laminasauthentication),
+  supporting the [laminas-authentication](https://github.com/laminas/laminas-authentication)
   component.
-- [zend-expressive-authentication-oauth2](https://github.com/zendframework/zend-expressive-authentication-oauth2),
+- [mezzio-authentication-oauth2](https://github.com/mezzio/mezzio-authentication-oauth2),
   supporting the [OAuth2](https://oauth.net/2/) authentication framework via the
   [league/oauth2-server](https://oauth2.thephpleague.com/) package.

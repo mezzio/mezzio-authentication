@@ -1,21 +1,22 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-authentication for the canonical source repository
- * @copyright Copyright (c) 2017-2019 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-authentication/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-authentication for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-authentication/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-authentication/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace ZendTest\Expressive\Authentication\UserRepository;
+namespace MezzioTest\Authentication\UserRepository;
 
+use Mezzio\Authentication\Exception\InvalidConfigException;
+use Mezzio\Authentication\UserInterface;
+use Mezzio\Authentication\UserRepository\PdoDatabase;
+use Mezzio\Authentication\UserRepository\PdoDatabaseFactory;
 use PDO;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Authentication\Exception\InvalidConfigException;
-use Zend\Expressive\Authentication\UserInterface;
-use Zend\Expressive\Authentication\UserRepository\PdoDatabase;
-use Zend\Expressive\Authentication\UserRepository\PdoDatabaseFactory;
 
 class PdoDatabaseFactoryTest extends TestCase
 {
@@ -94,7 +95,7 @@ class PdoDatabaseFactoryTest extends TestCase
 
     /**
      * @dataProvider getPdoInvalidConfig
-     * @expectedException Zend\Expressive\Authentication\Exception\InvalidConfigException
+     * @expectedException Mezzio\Authentication\Exception\InvalidConfigException
      */
     public function testInvokeWithInvalidConfig($pdoConfig)
     {

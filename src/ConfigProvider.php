@@ -1,13 +1,14 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-authentication for the canonical source repository
- * @copyright Copyright (c) 2017-2018 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-authentication/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-authentication for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-authentication/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-authentication/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace Zend\Expressive\Authentication;
+namespace Mezzio\Authentication;
 
 class ConfigProvider
 {
@@ -59,7 +60,13 @@ class ConfigProvider
                 // Provide an alias for the AuthenticationInterface based on the adapter you are using.
                 // AuthenticationInterface::class => Basic\BasicAccess::class,
                 // Provide an alias for the UserRepository adapter based on your application needs.
-                // UserRepositoryInterface::class => UserRepository\Htpasswd::class
+                // UserRepositoryInterface::class => UserRepository\Htpasswd::class,
+
+                // Legacy Zend Framework aliases
+                \Zend\Expressive\Authentication\AuthenticationMiddleware::class => AuthenticationMiddleware::class,
+                \Zend\Expressive\Authentication\UserRepository\Htpasswd::class => UserRepository\Htpasswd::class,
+                \Zend\Expressive\Authentication\UserRepository\PdoDatabase::class => UserRepository\PdoDatabase::class,
+                \Zend\Expressive\Authentication\UserInterface::class => UserInterface::class,
             ],
             'factories' => [
                 AuthenticationMiddleware::class => AuthenticationMiddlewareFactory::class,
