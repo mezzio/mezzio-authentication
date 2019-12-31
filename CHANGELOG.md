@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- [#14](https://github.com/zendframework/zend-expressive-authentication/issues/14)
+- [zendframework/zend-expressive-authentication#14](https://github.com/zendframework/zend-expressive-authentication/issues/14)
   renames the method `UserInterface::getUsername()` to
   `UserInterface::getIdentity()`.
 
@@ -24,7 +24,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#13](https://github.com/zendframework/zend-expressive-authentication/pull/13)
+- [zendframework/zend-expressive-authentication#13](https://github.com/zendframework/zend-expressive-authentication/pull/13)
   fixes an issue whereby fetching a record by an unknown username resulted in a
   "Trying to get property of non-object" error when using the `PdoDatabase` user
   repository implementation.
@@ -37,12 +37,12 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- [#4](https://github.com/zendframework/zend-expressive-authentication/pull/4)
+- [zendframework/zend-expressive-authentication#4](https://github.com/zendframework/zend-expressive-authentication/pull/4)
   renames the method `UserInterface::getUserRole()` to
   `UserInterface::getUserRoles()`. The method MUST return an array of string
   role names.
 
-- [#4](https://github.com/zendframework/zend-expressive-authentication/pull/4)
+- [zendframework/zend-expressive-authentication#4](https://github.com/zendframework/zend-expressive-authentication/pull/4)
   renames the method `UserRepositoryInterface::getRoleFromUser()` to
   `UserRepositoryInterface::getRolesFromUser()`. The method MUST return an array
   of string role names.
