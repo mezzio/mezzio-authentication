@@ -1,19 +1,20 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-authentication for the canonical source repository
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-authentication/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-authentication for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-authentication/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-authentication/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace ZendTest\Expressive\Authentication;
+namespace MezzioTest\Authentication;
 
+use Mezzio\Authentication\AuthenticationInterface;
+use Mezzio\Authentication\AuthenticationMiddleware;
+use Mezzio\Authentication\AuthenticationMiddlewareFactory;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Authentication\AuthenticationInterface;
-use Zend\Expressive\Authentication\AuthenticationMiddleware;
-use Zend\Expressive\Authentication\AuthenticationMiddlewareFactory;
 
 class AuthenticationMiddlewareFactoryTest extends TestCase
 {
@@ -28,7 +29,7 @@ class AuthenticationMiddlewareFactoryTest extends TestCase
     }
 
     /**
-     * @expectedException Zend\Expressive\Authentication\Exception\InvalidConfigException
+     * @expectedException Mezzio\Authentication\Exception\InvalidConfigException
      */
     public function testInvokeWithNoAuthenticationService()
     {

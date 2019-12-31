@@ -1,18 +1,19 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-expressive-authentication for the canonical source repository
- * @copyright Copyright (c) 2018 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-authentication/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/mezzio/mezzio-authentication for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-authentication/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-authentication/blob/master/LICENSE.md New BSD License
  */
 
 declare(strict_types=1);
 
-namespace ZendTest\Expressive\Authentication;
+namespace MezzioTest\Authentication;
 
+use Mezzio\Authentication\AuthenticationMiddleware;
+use Mezzio\Authentication\ConfigProvider;
+use Mezzio\Authentication\UserRepository;
 use PHPUnit\Framework\TestCase;
-use Zend\Expressive\Authentication\AuthenticationMiddleware;
-use Zend\Expressive\Authentication\ConfigProvider;
-use Zend\Expressive\Authentication\UserRepository;
 
 class ConfigProviderTest extends TestCase
 {

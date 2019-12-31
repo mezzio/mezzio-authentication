@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#15](https://github.com/zendframework/zend-expressive-authentication/pull/15)
+- [zendframework/zend-expressive-authentication#15](https://github.com/zendframework/zend-expressive-authentication/pull/15)
   adds support for PSR-15.
 
 ### Changed
@@ -19,21 +19,21 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- [#15](https://github.com/zendframework/zend-expressive-authentication/pull/15) and
-  [#3](https://github.com/zendframework/zend-expressive-authentication/pull/3)
+- [zendframework/zend-expressive-authentication#15](https://github.com/zendframework/zend-expressive-authentication/pull/15) and
+  [zendframework/zend-expressive-authentication#3](https://github.com/zendframework/zend-expressive-authentication/pull/3)
   remove support for http-interop/http-middleware and
   http-interop/http-server-middleware.
 
-- [#19](https://github.com/zendframework/zend-expressive-authentication/pull/19)
-  removes `Zend\Expressive\Authentication\ResponsePrototypeTrait`; the approach
+- [zendframework/zend-expressive-authentication#19](https://github.com/zendframework/zend-expressive-authentication/pull/19)
+  removes `Mezzio\Authentication\ResponsePrototypeTrait`; the approach
   was flawed, and the various adapters will be updated to compose response
   factories instead of instances.
 
 ### Fixed
 
-- [#18](https://github.com/zendframework/zend-expressive-authentication/pull/18)
+- [zendframework/zend-expressive-authentication#18](https://github.com/zendframework/zend-expressive-authentication/pull/18)
   uses the `ResponseInterface` as a factory. This was recently changed in
-  [zend-expressive#561](https://github.com/zendframework/zend-expressive/pull/561).
+  [mezzio#561](https://github.com/zendframework/zend-expressive/pull/561).
 
 ## 0.3.1 - 2018-03-12
 
@@ -43,7 +43,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- [#22](https://github.com/zendframework/zend-expressive-authentication/issues/22)
+- [zendframework/zend-expressive-authentication#22](https://github.com/zendframework/zend-expressive-authentication/issues/22)
   updates the `ResponsePrototypeTrait` to allow callable `ResponseInterface`
   services (instead of those directly returning a `ResponseInterface`).
 
@@ -67,7 +67,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- [#14](https://github.com/zendframework/zend-expressive-authentication/issues/14)
+- [zendframework/zend-expressive-authentication#14](https://github.com/zendframework/zend-expressive-authentication/issues/14)
   renames the method `UserInterface::getUsername()` to
   `UserInterface::getIdentity()`.
 
@@ -81,7 +81,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#13](https://github.com/zendframework/zend-expressive-authentication/pull/13)
+- [zendframework/zend-expressive-authentication#13](https://github.com/zendframework/zend-expressive-authentication/pull/13)
   fixes an issue whereby fetching a record by an unknown username resulted in a
   "Trying to get property of non-object" error when using the `PdoDatabase` user
   repository implementation.
@@ -94,12 +94,12 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- [#4](https://github.com/zendframework/zend-expressive-authentication/pull/4)
+- [zendframework/zend-expressive-authentication#4](https://github.com/zendframework/zend-expressive-authentication/pull/4)
   renames the method `UserInterface::getUserRole()` to
   `UserInterface::getUserRoles()`. The method MUST return an array of string
   role names.
 
-- [#4](https://github.com/zendframework/zend-expressive-authentication/pull/4)
+- [zendframework/zend-expressive-authentication#4](https://github.com/zendframework/zend-expressive-authentication/pull/4)
   renames the method `UserRepositoryInterface::getRoleFromUser()` to
   `UserRepositoryInterface::getRolesFromUser()`. The method MUST return an array
   of string role names.
