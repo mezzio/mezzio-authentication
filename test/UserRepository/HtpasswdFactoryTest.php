@@ -1,15 +1,16 @@
 <?php
-/**
- * @see       https://github.com/zendframework/zend-expressive-authentication for the canonical source repository
- * @copyright Copyright (c) 2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-expressive-authorization/blob/master/LICENSE.md New BSD License
- */
-namespace ZendTest\Expressive\Authentication\UserRepository;
 
+/**
+ * @see       https://github.com/mezzio/mezzio-authentication for the canonical source repository
+ * @copyright https://github.com/mezzio/mezzio-authentication/blob/master/COPYRIGHT.md
+ * @license   https://github.com/mezzio/mezzio-authentication/blob/master/LICENSE.md New BSD License
+ */
+namespace MezzioTest\Authentication\UserRepository;
+
+use Mezzio\Authentication\UserRepository\Htpasswd;
+use Mezzio\Authentication\UserRepository\HtpasswdFactory;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use Zend\Expressive\Authentication\UserRepository\Htpasswd;
-use Zend\Expressive\Authentication\UserRepository\HtpasswdFactory;
 
 class HtpasswdFactoryTest extends TestCase
 {
@@ -20,7 +21,7 @@ class HtpasswdFactoryTest extends TestCase
     }
 
     /**
-     * @expectedException Zend\Expressive\Authentication\Exception\InvalidConfigException
+     * @expectedException Mezzio\Authentication\Exception\InvalidConfigException
      */
     public function testInvokeWithEmptyConfig()
     {
@@ -29,7 +30,7 @@ class HtpasswdFactoryTest extends TestCase
     }
 
     /**
-     * @expectedException Zend\Expressive\Authentication\Exception\InvalidConfigException
+     * @expectedException Mezzio\Authentication\Exception\InvalidConfigException
      */
     public function testInvokeWithInvalidConfig()
     {

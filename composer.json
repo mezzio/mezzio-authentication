@@ -1,36 +1,37 @@
 {
-    "name": "zendframework/zend-expressive-authentication",
-    "description": "Authentication middleware for Expressive and PSR-7 applications",
-    "homepage": "https://docs.zendframework.com/zend-expressive-authentication/",
-    "type": "library",
+    "name": "mezzio/mezzio-authentication",
+    "description": "Authentication middleware for Mezzio and PSR-7 applications",
     "license": "BSD-3-Clause",
     "keywords": [
+        "laminas",
+        "mezzio",
         "authentication",
         "http",
         "middleware",
-        "zend-expressive",
         "psr-7"
     ],
+    "homepage": "https://mezzio.dev",
+    "support": {
+        "docs": "https://docs.mezzio.dev/mezzio-authentication/",
+        "issues": "https://github.com/mezzio/mezzio-authentication/issues",
+        "source": "https://github.com/mezzio/mezzio-authentication",
+        "rss": "https://github.com/mezzio/mezzio-authentication/releases.atom",
+        "chat": "https://laminas.dev/chat",
+        "forum": "https://discourse.laminas.dev"
+    },
     "config": {
         "sort-packages": true
-    },
-    "support": {
-        "docs": "https://docs.zendframework.com/zend-expressive-authentication/",
-        "issues": "https://github.com/zendframework/zend-expressive-authentication/issues",
-        "source": "https://github.com/zendframework/zend-expressive-authentication",
-        "slack": "https://zendframework-slack.herokuapp.com",
-        "forum": "https://discourse.zendframework.com/c/questions/expressive"
     },
     "require": {
         "php": "^7.1",
         "http-interop/http-middleware": "^0.4.1",
+        "laminas/laminas-zendframework-bridge": "^1.0",
         "psr/container": "^1.0",
         "psr/http-message": "^1.0.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.3",
-        "roave/security-advisories": "dev-master",
-        "zendframework/zend-coding-standard": "~1.0.0"
+        "laminas/laminas-coding-standard": "~1.0.0",
+        "phpunit/phpunit": "^6.3"
     },
     "conflict": {
         "container-interop/container-interop": "<1.2.0"
@@ -40,12 +41,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Zend\\Expressive\\Authentication\\": "src/"
+            "Mezzio\\Authentication\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ZendTest\\Expressive\\Authentication\\": "test/"
+            "MezzioTest\\Authentication\\": "test/"
         }
     },
     "scripts": {
@@ -59,5 +60,8 @@
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --coverage-clover clover.xml",
         "license-check": "vendor/bin/docheader check src/ test/"
+    },
+    "replace": {
+        "zendframework/zend-expressive-authentication": "self.version"
     }
 }
