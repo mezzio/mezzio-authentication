@@ -10,12 +10,12 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- [#4](https://github.com/zendframework/zend-expressive-authentication/pull/4)
+- [zendframework/zend-expressive-authentication#4](https://github.com/zendframework/zend-expressive-authentication/pull/4)
   renames the method `UserInterface::getUserRole()` to
   `UserInterface::getUserRoles()`. The method MUST return an array of string
   role names.
 
-- [#4](https://github.com/zendframework/zend-expressive-authentication/pull/4)
+- [zendframework/zend-expressive-authentication#4](https://github.com/zendframework/zend-expressive-authentication/pull/4)
   renames the method `UserRepositoryInterface::getRoleFromUser()` to
   `UserRepositoryInterface::getRolesFromUser()`. The method MUST return an array
   of string role names.
