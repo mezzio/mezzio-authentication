@@ -1,23 +1,23 @@
-# Zend Expressive Authentication
+# Laminas Mezzio Authentication
 
 This component provides authentication abstraction using a middleware approach
 for [PSR-7](http://www.php-fig.org/psr/psr-7/) and
 [PSR-15](https://github.com/php-fig/fig-standards/tree/4b417c91b89fbedaf3283620ce432b6f51c80cc0/proposed/http-handlers)
 applications.
 
-Authentication is performed using the [AuthenticationMiddleware](https://github.com/zendframework/zend-expressive-authentication/blob/master/src/AuthenticationMiddleware.php)
-class. This middleware consumes an [AuthenticationInterface](https://github.com/zendframework/zend-expressive-authentication/blob/master/src/AuthenticationInterface.php)
+Authentication is performed using the [AuthenticationMiddleware](https://github.com/mezzio/mezzio-authentication/blob/master/src/AuthenticationMiddleware.php)
+class. This middleware consumes an [AuthenticationInterface](https://github.com/mezzio/mezzio-authentication/blob/master/src/AuthenticationInterface.php)
 adapter to check if a [PSR-7](http://www.php-fig.org/psr/psr-7/) request is
 authenticated or not. If authenticated, the middleware executes the next
-middleware in the application, passing a [UserInterface](https://github.com/zendframework/zend-expressive-authentication/blob/master/src/UserInterface.php)
+middleware in the application, passing a [UserInterface](https://github.com/mezzio/mezzio-authentication/blob/master/src/UserInterface.php)
 object via a request attribute. If the request is not authenticated, the
 middleware returns a `401 Unauthorized` response based on the authentication
 adapter provided.
 
-The `Zend\Expressive\Authentication\UserInterface` is defined as follows:
+The `Mezzio\Authentication\UserInterface` is defined as follows:
 
 ```php
-namespace Zend\Expressive\Authentication;
+namespace Mezzio\Authentication;
 
 interface UserInterface
 {
@@ -48,12 +48,12 @@ interface UserInterface
 The `UserInterface` attribute in the PSR-7 request can be used for checking
 if a user has been authenticated or not, e.g. it can be used to verify the
 authorization level of a user (for this scope, it is consumed by
-[zend-expressive-authorization](https://github.com/zendframework/zend-expressive-authorization)).
+[mezzio-authorization](https://github.com/mezzio/mezzio-authorization)).
 
 ## Default User class
 
 We provide a default implementation of `UserInterface` via the class
-`Zend\Expressive\Authentication\DefaultUser`. The class is final and immutable,
+`Mezzio\Authentication\DefaultUser`. The class is final and immutable,
 in order to prevent runtime changes.
 
 Repositories will fetch user information based on the identity, including any
@@ -69,15 +69,15 @@ function (string $identity, array $roles = [], array $details = []) : UserInterf
 
 In order to notify the package to use your custom factory, you will need to
 create a service factory that returns it, and map it to the
-`Zend\Expressive\Authentication\UserInterface` service.
+`Mezzio\Authentication\UserInterface` service.
 
-We provide a service factory named `Zend\Expressive\Authentication\DefaultUserFactory`
+We provide a service factory named `Mezzio\Authentication\DefaultUserFactory`
 that returns a user factory that produces a `DefaultUser` instance from the
 arguments provided. This is mapped as follows in the service configuration:
 
 ```php
-use Zend\Expressive\Authentication\DefaultUserFactory;
-use Zend\Expressive\Authentication\UserInterface;
+use Mezzio\Authentication\DefaultUserFactory;
+use Mezzio\Authentication\UserInterface;
 
 return [
     // ...
@@ -100,7 +100,7 @@ As an example:
 
 ```php
 $app->get('/admin/dashboard', [
-    Zend\Expressive\Authentication\AuthenticationMiddleware::class,
+    Mezzio\Authentication\AuthenticationMiddleware::class,
     Admin\Action\Dashboard::class
 ], 'admin.dashboard');
 ```
@@ -116,19 +116,19 @@ You can choose an authentication adapter and a user repository through the
 service container configuration.
 
 You need to specify the service for authentication using the name
-`Zend\Expressive\Authentication\AuthenticationInterface` and the user registry
-using the service name `Zend\Expressive\Authentication\UserRepositoryInterface::class`.
+`Mezzio\Authentication\AuthenticationInterface` and the user registry
+using the service name `Mezzio\Authentication\UserRepositoryInterface::class`.
 
-For instance, using `zend-servicemanager` you can easily configure these two
+For instance, using `laminas-servicemanager` you can easily configure these two
 services using `aliases`. Below is an example of configuration using the *HTTP
 Basic Access Authentication* adapter and the *htpasswd* file as the user
 repository.
 
 ```php
-use Zend\Expressive\Authentication\AuthenticationInterface;
-use Zend\Expressive\Authentication\Basic;
-use Zend\Expressive\Authentication\UserRepository;
-use Zend\Expressive\Authentication\UserRepositoryInterface;
+use Mezzio\Authentication\AuthenticationInterface;
+use Mezzio\Authentication\Basic;
+use Mezzio\Authentication\UserRepository;
+use Mezzio\Authentication\UserRepositoryInterface;
 
 return [
     // ...

@@ -7,12 +7,12 @@ of repositories:
 - a database
 - a cache
 
-zend-expressive-authentication provides an interface,
-`Zend\Expressive\Authentication\UserRepositoryInterface`, to access this user
+mezzio-authentication provides an interface,
+`Mezzio\Authentication\UserRepositoryInterface`, to access this user
 storage:
 
 ```php
-namespace Zend\Expressive\Authentication;
+namespace Mezzio\Authentication;
 
 interface UserRepositoryInterface
 {
@@ -39,14 +39,14 @@ Such configuration is provided in the `authentication` hierarchy provided to
 your [PSR-11](http://www.php-fig.org/psr/psr-11/) container. We demonstrate
 examples of such configuration below.
 
-Using [Expressive](https://docs.zendframework.com/zend-expressive/), this
+Using [Mezzio](https://docs.mezzio.dev/mezzio/), this
 configuration can be stored in a file under the `/config/autoload/` folder.  We
 suggest to use a `.local.php` suffix &mdash; e.g.
 `/config/autoload/auth.local.php` &mdash; as local configuration is not stored
 in the version control system.
 
-You can also provide this configuration using a [ConfigProvider.php](https://github.com/zendframework/zend-expressive-authentication/blob/master/src/ConfigProvider.php)
-class. [Read this blog post](https://framework.zend.com/blog/2017-04-20-config-aggregator.html)
+You can also provide this configuration using a [ConfigProvider.php](https://github.com/mezzio/mezzio-authentication/blob/master/src/ConfigProvider.php)
+class. [Read this blog post](https://getlaminas.org/blog/2017-04-20-config-aggregator.html)
 for more information on config providers.
 
 ## htpasswd configuration
