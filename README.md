@@ -1,6 +1,6 @@
 # Mezzio Authentication Middleware
 
-[![Build Status](https://travis-ci.org/mezzio/mezzio-authentication.svg?branch=master)](https://travis-ci.org/mezzio/mezzio-authentication)
+[![Build Status](https://travis-ci.com/mezzio/mezzio-authentication.svg?branch=master)](https://travis-ci.com/mezzio/mezzio-authentication)
 [![Coverage Status](https://coveralls.io/repos/github/mezzio/mezzio-authentication/badge.svg?branch=master)](https://coveralls.io/github/mezzio/mezzio-authentication?branch=master)
 
 mezzio-authentication provides middleware for [Mezzio](https://docs.mezzio.dev/mezzio/)
