@@ -11,4 +11,3 @@ site_description: 'Authentication middleware for Mezzio and PSR-7 applications'
 repo_url: 'https://github.com/mezzio/mezzio-authentication'
 extra:
     project: Mezzio
-    project_url: 'https://docs.mezzio.dev'
