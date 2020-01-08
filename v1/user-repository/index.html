@@ -20,7 +20,7 @@
     <div class="container">
         
         <a class="logo-link navbar-brand offset-md-2" href="https://getlaminas.org/" data-tooltip data-placement="bottom" title="Go to the Laminas homepage">
-            <img src="../../img/laminas-foundation-white.svg" height="28" alt="Lamnias">
+            <img src="../../img/laminas-foundation-white.svg" height="28" alt="Laminas">
         </a>
         <a class="navbar-title" href="https://docs.laminas.dev/" data-tooltip data-placement="bottom" title="Go to the Laminas Documentation">
             Documentation
@@ -36,13 +36,17 @@
             
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a href="https://getlaminas.org/about" class="nav-link">About</a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://getlaminas.org/blog" class="nav-link">Blog</a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://docs.laminas.dev" class="nav-link">All Docs</a>
+                    <div class="dropdown">
+                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false">
+                            All Docs
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="https://docs.laminas.dev/components">Components</a>
+                            <a class="dropdown-item" href="https://docs.mezzio.dev/">Mezzio</a>
+                            <a class="dropdown-item" href="https://api-tools.getlaminas.org/docs">API Tools</a>
+                            <a class="dropdown-item" href="https://docs.laminas.dev/mvc">MVC</a>
+                        </div>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a href="https://getlaminas.org/participate" class="nav-link">Community</a>
@@ -235,20 +239,19 @@ of repositories:</p>
 <p>mezzio-authentication provides an interface,
 <code>Mezzio\Authentication\UserRepositoryInterface</code>, to access this user
 storage:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>namespace Mezzio\Authentication;</span>
+<pre class=codehilite><code class=language-php>namespace Mezzio\Authentication;
 
-<span class=x>interface UserRepositoryInterface</span>
-<span class=x>{</span>
-<span class=x>    /**</span>
-<span class=x>     * Authenticate the credential (username) using a password</span>
-<span class=x>     * or using only the credential string (e.g. token based credential)</span>
-<span class=x>     * It returns the authenticated user or null.</span>
-<span class=x>     *</span>
-<span class=x>     * @param string $credential can be also a token</span>
-<span class=x>     */</span>
-<span class=x>    public function authenticate(string $credential, string $password = null) : ?UserInterface;</span>
-<span class=x>}</span>
-</pre></div></p>
+interface UserRepositoryInterface
+{
+    /**
+     * Authenticate the credential (username) using a password
+     * or using only the credential string (e.g. token based credential)
+     * It returns the authenticated user or null.
+     *
+     * @param string $credential can be also a token
+     */
+    public function authenticate(string $credential, string $password = null) : ?UserInterface;
+}</code></pre>
 <p>It contains only the <code>authenticate()</code> function, to authenticate the user's
 credential. If authenticated, the result will be a <code>UserInterface</code> instance;
 otherwise, a <code>null</code> value is returned.</p>
@@ -269,34 +272,32 @@ for more information on config providers.</p>
 <h2 id="htpasswd-configuration">htpasswd Configuration</h2>
 <p>When using the htpasswd user repository implementation, you need only configure
 the path to the <code>htpasswd</code> file and a <code>realm</code>. The <code>htpasswd</code> file must use bcrypt hash algorithm:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>return [</span>
-<span class=x>    &#39;authentication&#39; =&gt; [</span>
-<span class=x>        &#39;realm&#39; =&gt; &#39;insert realm value&#39;,</span>
-<span class=x>        &#39;htpasswd&#39; =&gt; &#39;insert the path to htpasswd file&#39;,</span>
-<span class=x>    ],</span>
-<span class=x>];</span>
-</pre></div></p>
+<pre class=codehilite><code class=language-php>return [
+    'authentication' =&gt; [
+        'realm' =&gt; 'insert realm value',
+        'htpasswd' =&gt; 'insert the path to htpasswd file',
+    ],
+];</code></pre>
 <h2 id="pdo-configuration">PDO Configuration</h2>
 <p>When using the PDO user repository adapter, you will need to provide PDO
 connection parameters, as well as information on the table, field names, and a
 SQL statement for retrieving user roles:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>return [</span>
-<span class=x>    &#39;authentication&#39; =&gt; [</span>
-<span class=x>        &#39;pdo&#39; =&gt; [</span>
-<span class=x>            &#39;dsn&#39; =&gt; &#39;&#39;,</span>
-<span class=x>            &#39;username&#39; =&gt; &#39;&#39;,</span>
-<span class=x>            &#39;password&#39; =&gt; &#39;&#39;,</span>
-<span class=x>            &#39;table&#39; =&gt; &#39;user table name&#39;,</span>
-<span class=x>            &#39;field&#39; =&gt; [</span>
-<span class=x>                &#39;identity&#39; =&gt; &#39;identity field name&#39;,</span>
-<span class=x>                &#39;password&#39; =&gt; &#39;password field name&#39;,</span>
-<span class=x>            ],</span>
-<span class=x>            &#39;sql_get_roles&#39;   =&gt; &#39;SQL to retrieve roles with :identity parameter&#39;,</span>
-<span class=x>            &#39;sql_get_details&#39; =&gt; &#39;SQL to retrieve user details by :identity&#39;,</span>
-<span class=x>        ],</span>
-<span class=x>    ],</span>
-<span class=x>];</span>
-</pre></div></p>
+<pre class=codehilite><code class=language-php>return [
+    'authentication' =&gt; [
+        'pdo' =&gt; [
+            'dsn' =&gt; '',
+            'username' =&gt; '',
+            'password' =&gt; '',
+            'table' =&gt; 'user table name',
+            'field' =&gt; [
+                'identity' =&gt; 'identity field name',
+                'password' =&gt; 'password field name',
+            ],
+            'sql_get_roles'   =&gt; 'SQL to retrieve roles with :identity parameter',
+            'sql_get_details' =&gt; 'SQL to retrieve user details by :identity',
+        ],
+    ],
+];</code></pre>
 <p>The required parameters are <code>dsn</code>, <code>table</code>, and <code>field</code>.</p>
 <p>The <code>dsn</code> value is the DSN connection string to be used to connect to the database.
 For instance, using a SQLite database, a typical value is <code>sqlite:/path/to/file</code>.</p>
@@ -310,14 +311,12 @@ the user <code>password.</code> The <code>identity</code> of the user can be a u
 for retrieving the user roles. The identity value must be specified using the
 placeholder <code>:identity</code>. For instance, if a role is stored in a user table, a
 typical query might look like the following:</p>
-<p> <div class=codehilite><pre><span></span><span class=k>SELECT</span> <span class=k>role</span> <span class=k>FROM</span> <span class=k>user</span> <span class=k>WHERE</span> <span class=n>username</span> <span class=o>=</span> <span class=p>:</span><span class=k>identity</span>
-</pre></div></p>
+<pre class=codehilite><code class=language-sql>SELECT role FROM user WHERE username = :identity</code></pre>
 <p>The <code>sql_get_details</code> parameter is similar to <code>sql_get_roles</code>: it specifies the
 SQL query for retrieving the user's additional details, if any.</p>
 <p>For instance, if a user has an email field this can be returned as additional
 detail using the following query:</p>
-<p> <div class=codehilite><pre><span></span><span class=k>SELECT</span> <span class=n>email</span> <span class=k>FROM</span> <span class=k>user</span> <span class=k>WHERE</span> <span class=n>username</span> <span class=o>=</span> <span class=p>:</span><span class=k>identity</span>
-</pre></div></p>
+<pre class=codehilite><code class=language-sql>SELECT email FROM user WHERE username = :identity</code></pre>
 <h3>PDO Service Name</h3>
 <blockquote>
 <p>Since 1.1.0</p>
@@ -325,21 +324,20 @@ detail using the following query:</p>
 <p>As an alternative, you can provide a service name instead of PDO connection
 parameters. In such a case, you can substitute the key <code>service</code> for the <code>dsn</code>
 configuration key:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>return [</span>
-<span class=x>    &#39;authentication&#39; =&gt; [</span>
-<span class=x>        &#39;pdo&#39; =&gt; [</span>
-<span class=x>            &#39;service&#39; =&gt; \PDO::class,                 // &quot;service&quot; instead of &quot;dsn&quot;</span>
-<span class=x>            &#39;table&#39; =&gt; &#39;user table name&#39;,</span>
-<span class=x>            &#39;field&#39; =&gt; [</span>
-<span class=x>                &#39;identity&#39; =&gt; &#39;identity field name&#39;,</span>
-<span class=x>                &#39;password&#39; =&gt; &#39;password field name&#39;,</span>
-<span class=x>            ],</span>
-<span class=x>            &#39;sql_get_roles&#39;   =&gt; &#39;SQL to retrieve roles with :identity parameter&#39;,</span>
-<span class=x>            &#39;sql_get_details&#39; =&gt; &#39;SQL to retrieve user details by :identity&#39;,</span>
-<span class=x>        ],</span>
-<span class=x>    ],</span>
-<span class=x>];</span>
-</pre></div></p>
+<pre class=codehilite><code class=language-php>return [
+    'authentication' =&gt; [
+        'pdo' =&gt; [
+            'service' =&gt; \PDO::class,                 // &quot;service&quot; instead of &quot;dsn&quot;
+            'table' =&gt; 'user table name',
+            'field' =&gt; [
+                'identity' =&gt; 'identity field name',
+                'password' =&gt; 'password field name',
+            ],
+            'sql_get_roles'   =&gt; 'SQL to retrieve roles with :identity parameter',
+            'sql_get_details' =&gt; 'SQL to retrieve user details by :identity',
+        ],
+    ],
+];</code></pre>
 <p>The parameters <code>table</code> and <code>field</code> still remain required, and one or the other
 of <code>dsn</code> or <code>service</code> <strong>MUST</strong> be present.</p>
 <p>When specifying the <code>service</code> key, the value <strong>MUST</strong> evaluate to an existing
@@ -467,9 +465,10 @@ service that resolves to a <code>PDO</code> instance.</p>
             <div class="col-md-7 offset-md-2">
                 <h5>Laminas</h5>
                 <ul>
-                    <li>Laminas Project <a href="https://getlaminas.org/">Components and MVC for Enterprise Applications</a></li>
-                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 Middleware in Minutes</a></li>
-                    <li>Laminas API Tools: <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
+                    <li>Laminas Project <a href="https://getlaminas.org/">The new foundation for the community-supported, open source continuation of Zend Framework</a></li>
+                    <li>Laminas Components and MVC <a href="https://docs.laminas.dev/">Components and MVC for enterprise applications</a></li>
+                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 middleware in minutes</a></li>
+                    <li>Laminas API Tools <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
                 </ul>
             </div>
         </div>
@@ -506,7 +505,7 @@ service that resolves to a <code>PDO</code> instance.</p>
                 <h4 class="footer__headline">License</h4>
                 <p>
                     Code licensed under <a
-                        href="https://github.com/mezzio/mezzio-authentication//blob/master/LICENSE.md">BSD 3-Clause</a>.
+                        href="https://github.com/mezzio/mezzio-authentication/blob/master/LICENSE.md">BSD 3-Clause</a>.
                 </p>
             </div>
 
@@ -515,8 +514,8 @@ service that resolves to a <code>PDO</code> instance.</p>
                 <h4 class="footer__headline">Copyright</h4>
                 <p>
                     <!--Built with love by the Laminas team with the help of our
-                    <a href="https://github.com/mezzio/mezzio-authentication//graphs/contributors">contributors</a>.<br>-->
-                    &copy; 2019-2019 by <a href="https://getlaminas.org/">The Laminas Project</a>.
+                    <a href="https://github.com/mezzio/mezzio-authentication/graphs/contributors">contributors</a>.<br>-->
+                    &copy; 2019-2020 by <a href="https://getlaminas.org/">The Laminas Project</a>.
                 </p>
             </div>
         </div>

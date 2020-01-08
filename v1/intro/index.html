@@ -20,7 +20,7 @@
     <div class="container">
         
         <a class="logo-link navbar-brand offset-md-2" href="https://getlaminas.org/" data-tooltip data-placement="bottom" title="Go to the Laminas homepage">
-            <img src="../../img/laminas-foundation-white.svg" height="28" alt="Lamnias">
+            <img src="../../img/laminas-foundation-white.svg" height="28" alt="Laminas">
         </a>
         <a class="navbar-title" href="https://docs.laminas.dev/" data-tooltip data-placement="bottom" title="Go to the Laminas Documentation">
             Documentation
@@ -36,13 +36,17 @@
             
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a href="https://getlaminas.org/about" class="nav-link">About</a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://getlaminas.org/blog" class="nav-link">Blog</a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://docs.laminas.dev" class="nav-link">All Docs</a>
+                    <div class="dropdown">
+                        <a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false">
+                            All Docs
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="https://docs.laminas.dev/components">Components</a>
+                            <a class="dropdown-item" href="https://docs.mezzio.dev/">Mezzio</a>
+                            <a class="dropdown-item" href="https://api-tools.getlaminas.org/docs">API Tools</a>
+                            <a class="dropdown-item" href="https://docs.laminas.dev/mvc">MVC</a>
+                        </div>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a href="https://getlaminas.org/participate" class="nav-link">Community</a>
@@ -229,33 +233,32 @@ object via a request attribute. If the request is not authenticated, the
 middleware returns a <code>401 Unauthorized</code> response based on the authentication
 adapter provided.</p>
 <p>The <code>Mezzio\Authentication\UserInterface</code> is defined as follows:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>namespace Mezzio\Authentication;</span>
+<pre class=codehilite><code class=language-php>namespace Mezzio\Authentication;
 
-<span class=x>interface UserInterface</span>
-<span class=x>{</span>
-<span class=x>    /**</span>
-<span class=x>     * Get the unique user identity (id, username, email address, etc.).</span>
-<span class=x>     */</span>
-<span class=x>    public function getIdentity() : string;</span>
+interface UserInterface
+{
+    /**
+     * Get the unique user identity (id, username, email address, etc.).
+     */
+    public function getIdentity() : string;
 
-<span class=x>    /**</span>
-<span class=x>     * Get all user roles.</span>
-<span class=x>     *</span>
-<span class=x>     * @return string[]</span>
-<span class=x>     */</span>
-<span class=x>    public function getRoles() : array;</span>
+    /**
+     * Get all user roles.
+     *
+     * @return string[]
+     */
+    public function getRoles() : array;
 
-<span class=x>    /**</span>
-<span class=x>     * Get the detail named $name if present; return $default otherwise.</span>
-<span class=x>     */</span>
-<span class=x>    public function getDetail(string $name, $default = null);</span>
+    /**
+     * Get the detail named $name if present; return $default otherwise.
+     */
+    public function getDetail(string $name, $default = null);
 
-<span class=x>    /**</span>
-<span class=x>     * Get all additional user details, if any.</span>
-<span class=x>     */</span>
-<span class=x>    public function getDetails() : array;</span>
-<span class=x>}</span>
-</pre></div></p>
+    /**
+     * Get all additional user details, if any.
+     */
+    public function getDetails() : array;
+}</code></pre>
 <p>The <code>UserInterface</code> attribute in the PSR-7 request can be used for checking
 if a user has been authenticated or not, e.g. it can be used to verify the
 authorization level of a user (for this scope, it is consumed by
@@ -270,38 +273,35 @@ profile information, etc.). Often, user data and the objects representing them
 are unique to the application. As such, the default repository implementations
 we provide allow you to inject a <em>factory</em> for producing the user. This factory
 should be a PHP callable with the following signature:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>function (string $identity, array $roles = [], array $details = []) : UserInterface</span>
-</pre></div></p>
+<pre class=codehilite><code class=language-php>function (string $identity, array $roles = [], array $details = []) : UserInterface</code></pre>
 <p>In order to notify the package to use your custom factory, you will need to
 create a service factory that returns it, and map it to the
 <code>Mezzio\Authentication\UserInterface</code> service.</p>
 <p>We provide a service factory named <code>Mezzio\Authentication\DefaultUserFactory</code>
 that returns a user factory that produces a <code>DefaultUser</code> instance from the
 arguments provided. This is mapped as follows in the service configuration:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Mezzio\Authentication\DefaultUserFactory;</span>
-<span class=x>use Mezzio\Authentication\UserInterface;</span>
+<pre class=codehilite><code class=language-php>use Mezzio\Authentication\DefaultUserFactory;
+use Mezzio\Authentication\UserInterface;
 
-<span class=x>return [</span>
-<span class=x>    // ...</span>
-<span class=x>    &#39;dependencies&#39; =&gt; [</span>
-<span class=x>        &#39;factories&#39; =&gt; [</span>
-<span class=x>            // ...</span>
-<span class=x>            // Change the DefaultUserFactory::class with your custom service</span>
-<span class=x>            // factory that produces a user factory:</span>
-<span class=x>            UserInterface::class =&gt; DefaultUserFactory::class</span>
-<span class=x>        ]</span>
-<span class=x>    ]</span>
-<span class=x>];</span>
-</pre></div></p>
+return [
+    // ...
+    'dependencies' =&gt; [
+        'factories' =&gt; [
+            // ...
+            // Change the DefaultUserFactory::class with your custom service
+            // factory that produces a user factory:
+            UserInterface::class =&gt; DefaultUserFactory::class
+        ]
+    ]
+];</code></pre>
 <h2 id="usage-in-the-route">Usage in the Route</h2>
 <p>The <code>AuthenticationMiddleware</code> can be used to authenticate a route. You just
 need to add the class name of the middleware in the pipeline of a route.
 As an example:</p>
-<p> <div class=codehilite><pre><span></span><span class=x>$app-&gt;get(&#39;/admin/dashboard&#39;, [</span>
-<span class=x>    Mezzio\Authentication\AuthenticationMiddleware::class,</span>
-<span class=x>    Admin\Action\Dashboard::class</span>
-<span class=x>], &#39;admin.dashboard&#39;);</span>
-</pre></div></p>
+<pre class=codehilite><code class=language-php>$app-&gt;get('/admin/dashboard', [
+    Mezzio\Authentication\AuthenticationMiddleware::class,
+    Admin\Action\Dashboard::class
+], 'admin.dashboard');</code></pre>
 <p>In this example, the <code>AuthenticationMiddleware</code> is executed as first middleware
 of the route <code>admin.dashboard</code>. If the user is authenticated, the application
 executes the <code>Dashboard</code> action; otherwise it returns a <code>401 Unauthorized</code>
@@ -316,23 +316,22 @@ using the service name <code>Mezzio\Authentication\UserRepositoryInterface::clas
 services using <code>aliases</code>. Below is an example of configuration using the <em>HTTP
 Basic Access Authentication</em> adapter and the <em>htpasswd</em> file as the user
 repository.</p>
-<p> <div class=codehilite><pre><span></span><span class=x>use Mezzio\Authentication\AuthenticationInterface;</span>
-<span class=x>use Mezzio\Authentication\Basic;</span>
-<span class=x>use Mezzio\Authentication\UserRepository;</span>
-<span class=x>use Mezzio\Authentication\UserRepositoryInterface;</span>
+<pre class=codehilite><code class=language-php>use Mezzio\Authentication\AuthenticationInterface;
+use Mezzio\Authentication\Basic;
+use Mezzio\Authentication\UserRepository;
+use Mezzio\Authentication\UserRepositoryInterface;
 
-<span class=x>return [</span>
-<span class=x>    // ...</span>
-<span class=x>    &#39;dependencies&#39; =&gt; [</span>
-<span class=x>        // ...</span>
-<span class=x>        &#39;aliases&#39; =&gt; [</span>
-<span class=x>            // ...</span>
-<span class=x>            AuthenticationInterface::class =&gt; Basic\BasicAccess::class,</span>
-<span class=x>            UserRepositoryInterface::class =&gt; UserRepository\Htpasswd::class</span>
-<span class=x>        ]</span>
-<span class=x>    ]</span>
-<span class=x>];</span>
-</pre></div></p>
+return [
+    // ...
+    'dependencies' =&gt; [
+        // ...
+        'aliases' =&gt; [
+            // ...
+            AuthenticationInterface::class =&gt; Basic\BasicAccess::class,
+            UserRepositoryInterface::class =&gt; UserRepository\Htpasswd::class
+        ]
+    ]
+];</code></pre>
 
 
 
@@ -460,9 +459,10 @@ repository.</p>
             <div class="col-md-7 offset-md-2">
                 <h5>Laminas</h5>
                 <ul>
-                    <li>Laminas Project <a href="https://getlaminas.org/">Components and MVC for Enterprise Applications</a></li>
-                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 Middleware in Minutes</a></li>
-                    <li>Laminas API Tools: <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
+                    <li>Laminas Project <a href="https://getlaminas.org/">The new foundation for the community-supported, open source continuation of Zend Framework</a></li>
+                    <li>Laminas Components and MVC <a href="https://docs.laminas.dev/">Components and MVC for enterprise applications</a></li>
+                    <li>Mezzio <a href="https://docs.mezzio.dev/">PSR-15 middleware in minutes</a></li>
+                    <li>Laminas API Tools <a href="https://api-tools.getlaminas.org/">Build RESTful APIs in minutes</a></li>
                 </ul>
             </div>
         </div>
@@ -499,7 +499,7 @@ repository.</p>
                 <h4 class="footer__headline">License</h4>
                 <p>
                     Code licensed under <a
-                        href="https://github.com/mezzio/mezzio-authentication//blob/master/LICENSE.md">BSD 3-Clause</a>.
+                        href="https://github.com/mezzio/mezzio-authentication/blob/master/LICENSE.md">BSD 3-Clause</a>.
                 </p>
             </div>
 
@@ -508,8 +508,8 @@ repository.</p>
                 <h4 class="footer__headline">Copyright</h4>
                 <p>
                     <!--Built with love by the Laminas team with the help of our
-                    <a href="https://github.com/mezzio/mezzio-authentication//graphs/contributors">contributors</a>.<br>-->
-                    &copy; 2019-2019 by <a href="https://getlaminas.org/">The Laminas Project</a>.
+                    <a href="https://github.com/mezzio/mezzio-authentication/graphs/contributors">contributors</a>.<br>-->
+                    &copy; 2019-2020 by <a href="https://getlaminas.org/">The Laminas Project</a>.
                 </p>
             </div>
         </div>
