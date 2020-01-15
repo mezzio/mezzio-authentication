@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-     <loc>https://docs.mezzio.dev/</loc>
-     <lastmod>2020-01-09</lastmod>
+     <loc>https://docs.mezzio.dev/mezzio-authentication/</loc>
+     <lastmod>2020-01-15</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>https://docs.mezzio.dev/v1/intro/</loc>
-     <lastmod>2020-01-09</lastmod>
+     <loc>https://docs.mezzio.dev/mezzio-authentication/v1/intro/</loc>
+     <lastmod>2020-01-15</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>https://docs.mezzio.dev/v1/auth-adapter/</loc>
-     <lastmod>2020-01-09</lastmod>
+     <loc>https://docs.mezzio.dev/mezzio-authentication/v1/auth-adapter/</loc>
+     <lastmod>2020-01-15</lastmod>
      <changefreq>daily</changefreq>
     </url>
     <url>
-     <loc>https://docs.mezzio.dev/v1/user-repository/</loc>
-     <lastmod>2020-01-09</lastmod>
+     <loc>https://docs.mezzio.dev/mezzio-authentication/v1/user-repository/</loc>
+     <lastmod>2020-01-15</lastmod>
      <changefreq>daily</changefreq>
     </url>
 </urlset>
