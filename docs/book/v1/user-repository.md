@@ -36,7 +36,7 @@ otherwise, a `null` value is returned.
 In order to use a user repository adapter, we need to configure it. For instance,
 to consume an `htpasswd` file, we need to configure the path to the file.
 Such configuration is provided in the `authentication` hierarchy provided to
-your [PSR-11](http://www.php-fig.org/psr/psr-11/) container. We demonstrate
+your [PSR-11](https://www.php-fig.org/psr/psr-11/) container. We demonstrate
 examples of such configuration below.
 
 Using [Mezzio](https://docs.mezzio.dev/mezzio/), this
@@ -46,7 +46,7 @@ suggest to use a `.local.php` suffix &mdash; e.g.
 in the version control system.
 
 You can also provide this configuration using a [ConfigProvider.php](https://github.com/mezzio/mezzio-authentication/blob/master/src/ConfigProvider.php)
-class. [Read this blog post](https://getlaminas.org/blog/2017-04-20-config-aggregator.html)
+class. [Read this blog post](https://framework.zend.com/blog/2017-04-20-config-aggregator.html)
 for more information on config providers.
 
 ## htpasswd Configuration
