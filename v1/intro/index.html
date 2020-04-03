@@ -292,7 +292,7 @@ object via a request attribute. If the request is not authenticated, the
 middleware returns a <code>401 Unauthorized</code> response based on the authentication
 adapter provided.</p>
 <p>The <code>Mezzio\Authentication\UserInterface</code> is defined as follows:</p>
-<pre class=codehilite><code class=language-php>namespace Mezzio\Authentication;
+<pre class="highlight"><code class="language-php">namespace Mezzio\Authentication;
 
 interface UserInterface
 {
@@ -318,6 +318,7 @@ interface UserInterface
      */
     public function getDetails() : array;
 }</code></pre>
+
 <p>The <code>UserInterface</code> attribute in the PSR-7 request can be used for checking
 if a user has been authenticated or not, e.g. it can be used to verify the
 authorization level of a user (for this scope, it is consumed by
@@ -332,14 +333,15 @@ profile information, etc.). Often, user data and the objects representing them
 are unique to the application. As such, the default repository implementations
 we provide allow you to inject a <em>factory</em> for producing the user. This factory
 should be a PHP callable with the following signature:</p>
-<pre class=codehilite><code class=language-php>function (string $identity, array $roles = [], array $details = []) : UserInterface</code></pre>
+<pre class="highlight"><code class="language-php">function (string $identity, array $roles = [], array $details = []) : UserInterface</code></pre>
+
 <p>In order to notify the package to use your custom factory, you will need to
 create a service factory that returns it, and map it to the
 <code>Mezzio\Authentication\UserInterface</code> service.</p>
 <p>We provide a service factory named <code>Mezzio\Authentication\DefaultUserFactory</code>
 that returns a user factory that produces a <code>DefaultUser</code> instance from the
 arguments provided. This is mapped as follows in the service configuration:</p>
-<pre class=codehilite><code class=language-php>use Mezzio\Authentication\DefaultUserFactory;
+<pre class="highlight"><code class="language-php">use Mezzio\Authentication\DefaultUserFactory;
 use Mezzio\Authentication\UserInterface;
 
 return [
@@ -353,14 +355,16 @@ return [
         ]
     ]
 ];</code></pre>
+
 <h2 id="usage-in-the-route">Usage in the Route</h2>
 <p>The <code>AuthenticationMiddleware</code> can be used to authenticate a route. You just
 need to add the class name of the middleware in the pipeline of a route.
 As an example:</p>
-<pre class=codehilite><code class=language-php>$app-&gt;get('/admin/dashboard', [
+<pre class="highlight"><code class="language-php">$app-&gt;get('/admin/dashboard', [
     Mezzio\Authentication\AuthenticationMiddleware::class,
     Admin\Action\Dashboard::class
 ], 'admin.dashboard');</code></pre>
+
 <p>In this example, the <code>AuthenticationMiddleware</code> is executed as first middleware
 of the route <code>admin.dashboard</code>. If the user is authenticated, the application
 executes the <code>Dashboard</code> action; otherwise it returns a <code>401 Unauthorized</code>
@@ -375,7 +379,7 @@ using the service name <code>Mezzio\Authentication\UserRepositoryInterface::clas
 services using <code>aliases</code>. Below is an example of configuration using the <em>HTTP
 Basic Access Authentication</em> adapter and the <em>htpasswd</em> file as the user
 repository.</p>
-<pre class=codehilite><code class=language-php>use Mezzio\Authentication\AuthenticationInterface;
+<pre class="highlight"><code class="language-php">use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\Basic;
 use Mezzio\Authentication\UserRepository;
 use Mezzio\Authentication\UserRepositoryInterface;
