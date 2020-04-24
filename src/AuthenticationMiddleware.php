@@ -34,7 +34,11 @@ class AuthenticationMiddleware implements MiddlewareInterface
     {
         $user = $this->auth->authenticate($request);
         if (null !== $user) {
-            return $handler->handle($request->withAttribute(UserInterface::class, $user)->withAttribute(\Zend\Expressive\Authentication\UserInterface::class, $user));
+            return $handler->handle(
+                $request
+                    ->withAttribute(UserInterface::class, $user)
+                    ->withAttribute(\Zend\Expressive\Authentication\UserInterface::class, $user)
+            );
         }
         return $this->auth->unauthorizedResponse($request);
     }
