@@ -60,14 +60,18 @@ class AuthenticationMiddlewareTest extends TestCase
     {
         $response = $this->prophesize(ResponseInterface::class);
 
-        $this->request->withAttribute(UserInterface::class, $this->authenticatedUser->reveal())
-                      ->willReturn($this->request->reveal());
-        $this->request->withAttribute(\Zend\Expressive\Authentication\UserInterface::class, $this->authenticatedUser->reveal())
-                      ->willReturn($this->request->reveal());
-        $this->authentication->authenticate($this->request->reveal())
-                             ->willReturn($this->authenticatedUser->reveal());
-        $this->handler->handle($this->request->reveal())
-                      ->willReturn($response->reveal());
+        $this->request
+            ->withAttribute(UserInterface::class, $this->authenticatedUser->reveal())
+            ->willReturn($this->request->reveal());
+        $this->request
+            ->withAttribute(\Zend\Expressive\Authentication\UserInterface::class, $this->authenticatedUser->reveal())
+            ->willReturn($this->request->reveal());
+        $this->authentication
+            ->authenticate($this->request->reveal())
+            ->willReturn($this->authenticatedUser->reveal());
+        $this->handler
+            ->handle($this->request->reveal())
+            ->willReturn($response->reveal());
 
         $middleware = new AuthenticationMiddleware($this->authentication->reveal());
         $result = $middleware->process($this->request->reveal(), $this->handler->reveal());
