@@ -24,10 +24,6 @@
         "sort-packages": true
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "1.1.x-dev",
-            "dev-develop": "1.2.x-dev"
-        },
         "laminas": {
             "config-provider": "Mezzio\\Authentication\\ConfigProvider"
         }
