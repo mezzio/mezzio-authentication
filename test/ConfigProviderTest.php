@@ -20,12 +20,12 @@ class ConfigProviderTest extends TestCase
     /** @var ConfigProvider */
     private $provider;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->provider = new ConfigProvider();
     }
 
-    public function testProviderDefinesExpectedFactoryServices()
+    public function testProviderDefinesExpectedFactoryServices(): void
     {
         $config = $this->provider->getDependencies();
         $factories = $config['factories'];
@@ -35,16 +35,15 @@ class ConfigProviderTest extends TestCase
         $this->assertArrayHasKey(UserRepository\PdoDatabase::class, $factories);
     }
 
-    public function testInvocationReturnsArrayWithDependencies()
+    public function testInvocationReturnsArrayWithDependencies(): void
     {
         $config = ($this->provider)();
 
-        $this->assertInternalType('array', $config);
         $this->assertArrayHasKey('authentication', $config);
-        $this->assertInternalType('array', $config['authentication']);
+        $this->assertIsArray($config['authentication']);
 
         $this->assertArrayHasKey('dependencies', $config);
-        $this->assertInternalType('array', $config['dependencies']);
+        $this->assertIsArray($config['dependencies']);
         $this->assertArrayHasKey('aliases', $config['dependencies']);
         $this->assertArrayHasKey('factories', $config['dependencies']);
     }

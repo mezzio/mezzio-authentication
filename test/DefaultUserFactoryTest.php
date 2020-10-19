@@ -12,24 +12,21 @@ namespace MezzioTest\Authentication;
 
 use Mezzio\Authentication\DefaultUser;
 use Mezzio\Authentication\DefaultUserFactory;
-use Mezzio\Authentication\UserInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 
 class DefaultUserFactoryTest extends TestCase
 {
-    public function setUp()
+    /** @psalm-var ObjectProphecy<ContainerInterface> */
+    private $container;
+
+    public function setUp(): void
     {
         $this->container = $this->prophesize(ContainerInterface::class);
     }
 
-    public function testConstructor()
-    {
-        $factory = new DefaultUserFactory();
-        $this->assertInstanceOf(DefaultUserFactory::class, $factory);
-    }
-
-    public function testInvokeWithIdentity()
+    public function testInvokeWithIdentity(): void
     {
         $factory = new DefaultUserFactory();
         $userFactory = $factory($this->container->reveal());
@@ -38,7 +35,7 @@ class DefaultUserFactoryTest extends TestCase
         $this->assertEquals('foo', $defaultUser->getIdentity());
     }
 
-    public function testInvokeWithIdentityAndRoles()
+    public function testInvokeWithIdentityAndRoles(): void
     {
         $factory = new DefaultUserFactory();
         $userFactory = $factory($this->container->reveal());
@@ -48,7 +45,7 @@ class DefaultUserFactoryTest extends TestCase
         $this->assertEquals(['admin', 'user'], $defaultUser->getRoles());
     }
 
-    public function testInvokeWithIdentityAndRolesAndDetails()
+    public function testInvokeWithIdentityAndRolesAndDetails(): void
     {
         $factory = new DefaultUserFactory();
         $userFactory = $factory($this->container->reveal());

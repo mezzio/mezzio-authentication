@@ -10,27 +10,32 @@ declare(strict_types=1);
 
 namespace MezzioTest\Authentication\UserRepository;
 
+use Mezzio\Authentication\Exception\InvalidConfigException;
+use Mezzio\Authentication\Exception\RuntimeException;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepository\Htpasswd;
 use Mezzio\Authentication\UserRepositoryInterface;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 
 class HtpasswdTest extends TestCase
 {
     const EXAMPLE_IDENTITY = 'test';
 
-    protected function setUp()
+    /** @psalm-var ObjectProphecy<UserInterface> */
+    private $user;
+
+    protected function setUp(): void
     {
         $this->user = $this->prophesize(UserInterface::class);
         $this->user->getIdentity()->willReturn(self::EXAMPLE_IDENTITY);
     }
-    /**
-     * @expectedException Mezzio\Authentication\Exception\InvalidConfigException
-     */
-    public function testConstructorWithNoFile()
+
+    public function testConstructorWithNoFile(): void
     {
-        $htpasswd = new Htpasswd(
+        $this->expectException(InvalidConfigException::class);
+
+        new Htpasswd(
             'foo',
             function () {
                 return $this->user->reveal();
@@ -38,7 +43,7 @@ class HtpasswdTest extends TestCase
         );
     }
 
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $htpasswd = new Htpasswd(
             __DIR__ . '/../TestAssets/htpasswd',
@@ -49,7 +54,7 @@ class HtpasswdTest extends TestCase
         $this->assertInstanceOf(UserRepositoryInterface::class, $htpasswd);
     }
 
-    public function testAuthenticate()
+    public function testAuthenticate(): void
     {
         $htpasswd = new Htpasswd(
             __DIR__ . '/../TestAssets/htpasswd',
@@ -63,7 +68,7 @@ class HtpasswdTest extends TestCase
         $this->assertEquals(self::EXAMPLE_IDENTITY, $user->getIdentity());
     }
 
-    public function testAuthenticateInvalidUser()
+    public function testAuthenticateInvalidUser(): void
     {
         $htpasswd = new Htpasswd(
             __DIR__ . '/../TestAssets/htpasswd',
@@ -74,7 +79,7 @@ class HtpasswdTest extends TestCase
         $this->assertNull($htpasswd->authenticate(self::EXAMPLE_IDENTITY, 'foo'));
     }
 
-    public function testAuthenticateWithoutPassword()
+    public function testAuthenticateWithoutPassword(): void
     {
         $htpasswd = new Htpasswd(
             __DIR__ . '/../TestAssets/htpasswd',
@@ -85,11 +90,10 @@ class HtpasswdTest extends TestCase
         $this->assertNull($htpasswd->authenticate(self::EXAMPLE_IDENTITY, null));
     }
 
-    /**
-     * @expectedException Mezzio\Authentication\Exception\RuntimeException
-     */
-    public function testAuthenticateWithInsecureHash()
+    public function testAuthenticateWithInsecureHash(): void
     {
+        $this->expectException(RuntimeException::class);
+
         $htpasswd = new Htpasswd(
             __DIR__ . '/../TestAssets/htpasswd_insecure',
             function () {

@@ -26,15 +26,19 @@ final class DefaultUser implements UserInterface
     private $identity;
 
     /**
-     * @var string[]
+     * @psalm-var array<int|string, string>
      */
     private $roles;
 
     /**
-     * @var array
+     * @psalm-var array<string, mixed>
      */
     private $details;
 
+    /**
+     * @psalm-param array<int|string, string> $roles
+     * @psalm-param array<string, mixed> $details
+     */
     public function __construct(string $identity, array $roles = [], array $details = [])
     {
         $this->identity = $identity;
@@ -47,11 +51,17 @@ final class DefaultUser implements UserInterface
         return $this->identity;
     }
 
+    /**
+     * @psalm-return array<int|string, string>
+     */
     public function getRoles() : array
     {
         return $this->roles;
     }
 
+    /**
+     * @psalm-return array<string, mixed>
+     */
     public function getDetails() : array
     {
         return $this->details;

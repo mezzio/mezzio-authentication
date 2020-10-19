@@ -16,31 +16,31 @@ use PHPUnit\Framework\TestCase;
 
 class DefaultUserTest extends TestCase
 {
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $user = new DefaultUser('foo');
         $this->assertInstanceOf(UserInterface::class, $user);
     }
 
-    public function testGetIdentity()
+    public function testGetIdentity(): void
     {
         $user = new DefaultUser('foo');
         $this->assertEquals('foo', $user->getIdentity());
     }
 
-    public function testGetRoles()
+    public function testGetRoles(): void
     {
         $user = new DefaultUser('foo', ['foo', 'bar']);
         $this->assertEquals(['foo', 'bar'], $user->getRoles());
     }
 
-    public function testGetDetails()
+    public function testGetDetails(): void
     {
         $user = new DefaultUser('foo', ['foo', 'bar'], ['name' => 'Foo']);
         $this->assertEquals(['name' => 'Foo'], $user->getDetails());
     }
 
-    public function testGetDetail()
+    public function testGetDetail(): void
     {
         $user = new DefaultUser('foo', ['foo', 'bar'], ['name' => 'Foo']);
         $this->assertEquals('Foo', $user->getDetail('name'));

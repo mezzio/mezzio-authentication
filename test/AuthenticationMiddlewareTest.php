@@ -14,6 +14,7 @@ use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\AuthenticationMiddleware;
 use Mezzio\Authentication\UserInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -21,10 +22,19 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class AuthenticationMiddlewareTest extends TestCase
 {
-    protected $authentication;
-    protected $request;
+    /** @psalm-var ObjectProphecy<AuthenticationInterface> */
+    private $authentication;
 
-    public function setUp()
+    /** @psalm-var ObjectProphecy<ServerRequestInterface> */
+    private $request;
+
+    /** @psalm-var ObjectProphecy<UserInterface> */
+    private $authenticatedUser;
+
+    /** @psalm-var ObjectProphecy<RequestHandlerInterface> */
+    private $handler;
+
+    public function setUp(): void
     {
         $this->authentication = $this->prophesize(AuthenticationInterface::class);
         $this->request = $this->prophesize(ServerRequestInterface::class);
@@ -32,14 +42,13 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->handler = $this->prophesize(RequestHandlerInterface::class);
     }
 
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $middleware = new AuthenticationMiddleware($this->authentication->reveal());
-        $this->assertInstanceOf(AuthenticationMiddleware::class, $middleware);
         $this->assertInstanceOf(MiddlewareInterface::class, $middleware);
     }
 
-    public function testProcessWithNoAuthenticatedUser()
+    public function testProcessWithNoAuthenticatedUser(): void
     {
         $response = $this->prophesize(ResponseInterface::class);
 
@@ -51,12 +60,11 @@ class AuthenticationMiddlewareTest extends TestCase
         $middleware = new AuthenticationMiddleware($this->authentication->reveal());
         $result = $middleware->process($this->request->reveal(), $this->handler->reveal());
 
-        $this->assertInstanceOf(ResponseInterface::class, $result);
         $this->assertEquals($response->reveal(), $result);
         $this->authentication->unauthorizedResponse($this->request->reveal())->shouldBeCalled();
     }
 
-    public function testProcessWithAuthenticatedUser()
+    public function testProcessWithAuthenticatedUser(): void
     {
         $response = $this->prophesize(ResponseInterface::class);
 
@@ -76,7 +84,6 @@ class AuthenticationMiddlewareTest extends TestCase
         $middleware = new AuthenticationMiddleware($this->authentication->reveal());
         $result = $middleware->process($this->request->reveal(), $this->handler->reveal());
 
-        $this->assertInstanceOf(ResponseInterface::class, $result);
         $this->assertEquals($response->reveal(), $result);
         $this->handler->handle($this->request->reveal())->shouldBeCalled();
     }

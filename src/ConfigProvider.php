@@ -14,6 +14,8 @@ class ConfigProvider
 {
     /**
      * Return the configuration array.
+     *
+     * @return array<string, mixed>
      */
     public function __invoke() : array
     {
@@ -23,6 +25,9 @@ class ConfigProvider
         ];
     }
 
+    /**
+     * @return array<empty>
+     */
     public function getAuthenticationConfig() : array
     {
         return [
@@ -52,6 +57,8 @@ class ConfigProvider
 
     /**
      * Returns the container dependencies
+     *
+     * @psalm-return array<string, array<string, class-string>>
      */
     public function getDependencies() : array
     {

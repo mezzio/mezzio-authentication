@@ -14,6 +14,7 @@ use Mezzio\Authentication\Exception;
 use Mezzio\Authentication\UserInterface;
 use PDO;
 use Psr\Container\ContainerInterface;
+use Webmozart\Assert\Assert;
 
 class PdoDatabaseFactory
 {
@@ -22,12 +23,18 @@ class PdoDatabaseFactory
      */
     public function __invoke(ContainerInterface $container) : PdoDatabase
     {
-        $pdo = $container->get('config')['authentication']['pdo'] ?? null;
+        $config = $container->get('config');
+        Assert::isMap($config);
+        $authConfig = $config['authentication'] ?? [];
+        $pdo = $authConfig['pdo'] ?? null;
+
         if (null === $pdo) {
             throw new Exception\InvalidConfigException(
                 'PDO values are missing in authentication config'
             );
         }
+
+        Assert::isMap($pdo);
 
         if (! isset($pdo['table'])) {
             throw new Exception\InvalidConfigException(
@@ -45,11 +52,17 @@ class PdoDatabaseFactory
             );
         }
 
-        if (isset($pdo['service']) && $container->has($pdo['service'])) {
+        $user = $container->get(UserInterface::class);
+        Assert::isCallable($user);
+
+        if (isset($pdo['service']) && $container->has((string) $pdo['service'])) {
+            $pdoService = $container->get((string) $pdo['service']);
+            Assert::isInstanceOf($pdoService, PDO::class);
+
             return new PdoDatabase(
-                $container->get($pdo['service']),
+                $pdoService,
                 $pdo,
-                $container->get(UserInterface::class)
+                $user
             );
         }
 
@@ -61,12 +74,12 @@ class PdoDatabaseFactory
 
         return new PdoDatabase(
             new PDO(
-                $pdo['dsn'],
-                $pdo['username'] ?? null,
-                $pdo['password'] ?? null
+                (string) $pdo['dsn'],
+                (string) ($pdo['username'] ?? null),
+                (string) ($pdo['password'] ?? null)
             ),
             $pdo,
-            $container->get(UserInterface::class)
+            $user
         );
     }
 }

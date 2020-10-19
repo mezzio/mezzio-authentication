@@ -10,14 +10,15 @@ declare(strict_types=1);
 
 namespace MezzioTest\Authentication;
 
-use Generator;
 use Mezzio\Authentication\Exception\ExceptionInterface;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerExceptionInterface;
 
 class ExceptionTest extends TestCase
 {
-    public function exception() : Generator
+    /**
+     * @psalm-return iterable<string, list<string>>
+     */
+    public function exception() : iterable
     {
         $namespace = substr(ExceptionInterface::class, 0, strrpos(ExceptionInterface::class, '\\') + 1);
 

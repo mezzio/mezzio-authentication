@@ -16,11 +16,24 @@ use Mezzio\Authentication\UserRepository\PdoDatabase;
 use Mezzio\Authentication\UserRepository\PdoDatabaseFactory;
 use PDO;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 
 class PdoDatabaseFactoryTest extends TestCase
 {
-    protected function setUp()
+    /** @psalm-var ObjectProphecy<ContainerInterface> */
+    private $container;
+
+    /** @psalm-var ObjectProphecy<UserInterface> */
+    private $user;
+
+    /** @psalm-var ObjectProphecy<PDO> */
+    private $pdo;
+
+    /** @var PdoDatabaseFactory */
+    private $factory;
+
+    protected function setUp(): void
     {
         $this->container = $this->prophesize(ContainerInterface::class);
         $this->user = $this->prophesize(UserInterface::class);
@@ -28,7 +41,7 @@ class PdoDatabaseFactoryTest extends TestCase
         $this->factory = new PdoDatabaseFactory();
     }
 
-    public function testInvokeWithMissingConfig()
+    public function testInvokeWithMissingConfig(): void
     {
         // We cannot throw a ContainerExceptionInterface directly; this
         // approach simply mimics `get()` throwing _any_ exception, which is
@@ -39,16 +52,20 @@ class PdoDatabaseFactoryTest extends TestCase
         ($this->factory)($this->container->reveal());
     }
 
-    public function testInvokeWithEmptyConfig()
+    public function testInvokeWithEmptyConfig(): void
     {
         $this->container->get('config')->willReturn([]);
 
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('PDO values are missing in authentication config');
-        $pdoDatabase = ($this->factory)($this->container->reveal());
+
+        ($this->factory)($this->container->reveal());
     }
 
-    public function getPdoInvalidConfig()
+    /**
+     * @psalm-return list<list<array<string, array<string, string>|string>>>
+     */
+    public function getPdoInvalidConfig(): array
     {
         return [
             [[]],
@@ -95,9 +112,8 @@ class PdoDatabaseFactoryTest extends TestCase
 
     /**
      * @dataProvider getPdoInvalidConfig
-     * @expectedException Mezzio\Authentication\Exception\InvalidConfigException
      */
-    public function testInvokeWithInvalidConfig($pdoConfig)
+    public function testInvokeWithInvalidConfig(array $pdoConfig): void
     {
         $this->container->get('config')->willReturn([
             'authentication' => ['pdo' => $pdoConfig]
@@ -109,10 +125,15 @@ class PdoDatabaseFactoryTest extends TestCase
                 return $this->user->reveal();
             }
         );
-        $pdoDatabase = ($this->factory)($this->container->reveal());
+
+        $this->expectException(InvalidConfigException::class);
+        ($this->factory)($this->container->reveal());
     }
 
-    public function getPdoValidConfig()
+    /**
+     * @psalm-return list<list<array<string, mixed>>>
+     */
+    public function getPdoValidConfig(): array
     {
         return [
             [[
@@ -136,8 +157,10 @@ class PdoDatabaseFactoryTest extends TestCase
 
     /**
      * @dataProvider getPdoValidConfig
+     *
+     * @psalm-param array<string, mixed> $pdoConfig
      */
-    public function testInvokeWithValidConfig($pdoConfig)
+    public function testInvokeWithValidConfig(array $pdoConfig): void
     {
         $this->container->get('config')->willReturn([
             'authentication' => ['pdo' => $pdoConfig]
@@ -150,6 +173,12 @@ class PdoDatabaseFactoryTest extends TestCase
             }
         );
         $pdoDatabase = ($this->factory)($this->container->reveal());
-        $this->assertInstanceOf(PdoDatabase::class, $pdoDatabase);
+        $this->assertEquals(new PdoDatabase(
+            array_key_exists('dsn', $pdoConfig) ? new PDO((string) $pdoConfig['dsn']) : $this->pdo->reveal(),
+            $pdoConfig,
+            function () {
+                return $this->user->reveal();
+            }
+        ), $pdoDatabase);
     }
 }

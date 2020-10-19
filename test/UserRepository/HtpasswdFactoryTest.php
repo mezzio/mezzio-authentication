@@ -15,18 +15,28 @@ use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepository\Htpasswd;
 use Mezzio\Authentication\UserRepository\HtpasswdFactory;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 
 class HtpasswdFactoryTest extends TestCase
 {
-    protected function setUp()
+    /** @psalm-var ObjectProphecy<ContainerInterface> */
+    private $container;
+
+    /** @psalm-var ObjectProphecy<UserInterface> */
+    private $user;
+
+    /** @var HtpasswdFactory */
+    private $factory;
+
+    protected function setUp(): void
     {
         $this->container = $this->prophesize(ContainerInterface::class);
         $this->user = $this->prophesize(UserInterface::class);
         $this->factory = new HtpasswdFactory();
     }
 
-    public function testInvokeWithMissingConfig()
+    public function testInvokeWithMissingConfig(): void
     {
         // We cannot throw a ContainerExceptionInterface directly; this
         // approach simply mimics `get()` throwing _any_ exception, which is
@@ -37,7 +47,7 @@ class HtpasswdFactoryTest extends TestCase
         ($this->factory)($this->container->reveal());
     }
 
-    public function testInvokeWithEmptyConfig()
+    public function testInvokeWithEmptyConfig() : void
     {
         $this->container->get('config')->willReturn([]);
         $this->container->get(UserInterface::class)->willReturn(
@@ -47,10 +57,10 @@ class HtpasswdFactoryTest extends TestCase
         );
 
         $this->expectException(InvalidConfigException::class);
-        $htpasswd = ($this->factory)($this->container->reveal());
+        ($this->factory)($this->container->reveal());
     }
 
-    public function testInvokeWithInvalidConfig()
+    public function testInvokeWithInvalidConfig(): void
     {
         $this->container->get('config')->willReturn([
             'authentication' => [
@@ -64,14 +74,14 @@ class HtpasswdFactoryTest extends TestCase
         );
 
         $this->expectException(InvalidConfigException::class);
-        $htpasswd = ($this->factory)($this->container->reveal());
+        ($this->factory)($this->container->reveal());
     }
 
-    public function testInvokeWithValidConfig()
+    public function testInvokeWithValidConfig(): void
     {
         $this->container->get('config')->willReturn([
             'authentication' => [
-                'htpasswd' => __DIR__ . '/../TestAssets/htpasswd'
+                'htpasswd' => $filename = __DIR__ . '/../TestAssets/htpasswd'
             ]
         ]);
         $this->container->get(UserInterface::class)->willReturn(
@@ -81,6 +91,11 @@ class HtpasswdFactoryTest extends TestCase
         );
 
         $htpasswd = ($this->factory)($this->container->reveal());
-        $this->assertInstanceOf(Htpasswd::class, $htpasswd);
+        $this->assertEquals(new Htpasswd(
+            $filename,
+            function () {
+                return $this->user->reveal();
+            }
+        ), $htpasswd);
     }
 }

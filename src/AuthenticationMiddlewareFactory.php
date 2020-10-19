@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Mezzio\Authentication;
 
 use Psr\Container\ContainerInterface;
+use Webmozart\Assert\Assert;
 
 class AuthenticationMiddlewareFactory
 {
@@ -21,11 +22,17 @@ class AuthenticationMiddlewareFactory
             : ($container->has(\Zend\Expressive\Authentication\AuthenticationInterface::class)
                 ? $container->get(\Zend\Expressive\Authentication\AuthenticationInterface::class)
                 : null);
+        Assert::nullOrIsInstanceOfAny($authentication, [
+            AuthenticationInterface::class,
+            \Zend\Expressive\Authentication\AuthenticationInterface::class
+        ]);
+
         if (null === $authentication) {
             throw new Exception\InvalidConfigException(
                 'AuthenticationInterface service is missing'
             );
         }
+
         return new AuthenticationMiddleware($authentication);
     }
 }

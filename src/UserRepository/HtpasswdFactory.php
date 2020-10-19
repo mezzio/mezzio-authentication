@@ -13,6 +13,7 @@ namespace Mezzio\Authentication\UserRepository;
 use Mezzio\Authentication\Exception;
 use Mezzio\Authentication\UserInterface;
 use Psr\Container\ContainerInterface;
+use Webmozart\Assert\Assert;
 
 class HtpasswdFactory
 {
@@ -21,16 +22,23 @@ class HtpasswdFactory
      */
     public function __invoke(ContainerInterface $container) : Htpasswd
     {
-        $htpasswd = $container->get('config')['authentication']['htpasswd'] ?? null;
+        $config = $container->get('config');
+        Assert::isMap($config);
+        $authConfig = $config['authentication'] ?? [];
+
+        $htpasswd = $authConfig['htpasswd'] ?? null;
+        Assert::nullOrString($htpasswd);
+
         if (null === $htpasswd) {
             throw new Exception\InvalidConfigException(sprintf(
                 'Config key authentication.htpasswd is not present; cannot create %s user repository adapter',
                 Htpasswd::class
             ));
         }
-        return new Htpasswd(
-            $htpasswd,
-            $container->get(UserInterface::class)
-        );
+
+        $user = $container->get(UserInterface::class);
+        Assert::isCallable($user);
+
+        return new Htpasswd($htpasswd, $user);
     }
 }

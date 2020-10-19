@@ -20,17 +20,23 @@ interface UserInterface
     /**
      * Get all user roles
      *
-     * @return Iterable
+     * @psalm-return iterable<int|string, string>
      */
     public function getRoles() : iterable;
 
     /**
      * Get a detail $name if present, $default otherwise
+     *
+     * @param mixed $default
+     *
+     * @return mixed
      */
     public function getDetail(string $name, $default = null);
 
     /**
      * Get all the details, if any
+     *
+     * @psalm-return array<string, mixed>
      */
     public function getDetails() : array;
 }

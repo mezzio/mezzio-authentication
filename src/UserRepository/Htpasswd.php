@@ -13,6 +13,7 @@ namespace Mezzio\Authentication\UserRepository;
 use Mezzio\Authentication\Exception;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepositoryInterface;
+use Webmozart\Assert\Assert;
 
 /**
  * Adapter for Apache htpasswd file
@@ -28,10 +29,14 @@ class Htpasswd implements UserRepositoryInterface
 
     /**
      * @var callable
+     *
+     * @psalm-var callable(string, array<int|string, string>, array<string, mixed>): UserInterface
      */
     private $userFactory;
 
     /**
+     * @psalm-param callable(string, array<int|string, string>, array<string, mixed>): UserInterface $userFactory
+     *
      * @throws Exception\InvalidConfigException
      */
     public function __construct(string $filename, callable $userFactory)
@@ -45,11 +50,14 @@ class Htpasswd implements UserRepositoryInterface
         $this->filename = $filename;
 
         // Provide type safety for the composed user factory.
-        $this->userFactory = function (
+        $this->userFactory = static function (
             string $identity,
             array $roles = [],
             array $details = []
         ) use ($userFactory) : UserInterface {
+            Assert::allString($roles);
+            Assert::isMap($details);
+
             return $userFactory($identity, $roles, $details);
         };
     }
@@ -63,6 +71,7 @@ class Htpasswd implements UserRepositoryInterface
             return null;
         }
         $found = false;
+        $hash = null;
         while (! $found && ($line = fgets($handle)) !== false) {
             [$name, $hash] = explode(':', $line);
             if ($credential !== $name) {
@@ -74,8 +83,10 @@ class Htpasswd implements UserRepositoryInterface
         }
         fclose($handle);
 
+        Assert::stringNotEmpty($hash);
+
         if ($found && password_verify($password ?? '', $hash)) {
-            return ($this->userFactory)($credential);
+            return ($this->userFactory)($credential, [], []);
         }
         return null;
     }

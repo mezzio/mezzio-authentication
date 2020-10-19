@@ -15,6 +15,8 @@ use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepositoryInterface;
 use PDO;
 use PDOException;
+use stdClass;
+use Webmozart\Assert\Assert;
 
 /**
  * Adapter for PDO database
@@ -29,15 +31,22 @@ class PdoDatabase implements UserRepositoryInterface
     private $pdo;
 
     /**
-     * @var array
+     * @var array<string, mixed>
      */
     private $config;
 
     /**
      * @var callable
+     *
+     * @psalm-var callable(string, array<int|string, string>, array<string, mixed>): UserInterface
      */
     private $userFactory;
 
+    /**
+     * @param array<string, mixed> $config
+     *
+     * @psalm-param callable(string, array<int|string, string>, array<string, mixed>): UserInterface $userFactory
+     */
     public function __construct(
         PDO $pdo,
         array $config,
@@ -47,11 +56,14 @@ class PdoDatabase implements UserRepositoryInterface
         $this->config = $config;
 
         // Provide type safety for the composed user factory.
-        $this->userFactory = function (
+        $this->userFactory = static function (
             string $identity,
             array $roles = [],
             array $details = []
         ) use ($userFactory) : UserInterface {
+            Assert::allString($roles);
+            Assert::isMap($details);
+
             return $userFactory($identity, $roles, $details);
         };
     }
@@ -61,11 +73,14 @@ class PdoDatabase implements UserRepositoryInterface
      */
     public function authenticate(string $credential, string $password = null) : ?UserInterface
     {
+        $fields = $this->config['field'];
+        Assert::isMap($fields);
+
         $sql = sprintf(
             "SELECT %s FROM %s WHERE %s = :identity",
-            $this->config['field']['password'],
-            $this->config['table'],
-            $this->config['field']['identity']
+            (string) $fields['password'],
+            (string) $this->config['table'],
+            (string) $fields['identity']
         );
 
         $stmt = $this->pdo->prepare($sql);
@@ -83,7 +98,11 @@ class PdoDatabase implements UserRepositoryInterface
             return null;
         }
 
-        if (password_verify($password ?? '', $result->{$this->config['field']['password']} ?? '')) {
+        Assert::isInstanceOf($result, stdClass::class);
+        Assert::string($credential);
+        $passwordHash = (string) ($result->{$fields['password']} ?? '');
+
+        if (password_verify($password ?? '', $passwordHash)) {
             return ($this->userFactory)(
                 $credential,
                 $this->getUserRoles($credential),
@@ -96,14 +115,17 @@ class PdoDatabase implements UserRepositoryInterface
     /**
      * Get the user roles if present.
      *
-     * @param string $identity
      * @return string[]
+     *
+     * @psalm-return list<string>
      */
     protected function getUserRoles(string $identity) : array
     {
         if (! isset($this->config['sql_get_roles'])) {
             return [];
         }
+
+        Assert::string($this->config['sql_get_roles']);
 
         if (false === strpos($this->config['sql_get_roles'], ':identity')) {
             throw new Exception\InvalidConfigException(
@@ -132,7 +154,8 @@ class PdoDatabase implements UserRepositoryInterface
 
         $roles = [];
         foreach ($stmt->fetchAll(PDO::FETCH_NUM) as $role) {
-            $roles[] = $role[0];
+            Assert::isList($role);
+            $roles[] = (string) $role[0];
         }
         return $roles;
     }
@@ -141,13 +164,15 @@ class PdoDatabase implements UserRepositoryInterface
      * Get the user details if present.
      *
      * @param string $identity
-     * @return string[]
+     * @psalm-return array<string, mixed>
      */
     protected function getUserDetails(string $identity) : array
     {
         if (! isset($this->config['sql_get_details'])) {
             return [];
         }
+
+        Assert::string($this->config['sql_get_details']);
 
         if (false === strpos($this->config['sql_get_details'], ':identity')) {
             throw new Exception\InvalidConfigException(
@@ -173,6 +198,11 @@ class PdoDatabase implements UserRepositoryInterface
         if (! $stmt->execute()) {
             return [];
         }
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $userDetails = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        Assert::isMap($userDetails);
+
+        return $userDetails;
     }
 }
