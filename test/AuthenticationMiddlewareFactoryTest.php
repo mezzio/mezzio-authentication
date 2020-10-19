@@ -13,30 +13,36 @@ namespace MezzioTest\Authentication;
 use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\AuthenticationMiddleware;
 use Mezzio\Authentication\AuthenticationMiddlewareFactory;
+use Mezzio\Authentication\Exception\InvalidConfigException;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 
 class AuthenticationMiddlewareFactoryTest extends TestCase
 {
-    protected $authentication;
-    protected $request;
+    /** @psalm-var ObjectProphecy<ContainerInterface> */
+    private $container;
 
-    public function setUp()
+    /** @psalm-var ObjectProphecy<AuthenticationInterface> */
+    private $authentication;
+
+    /** @var AuthenticationMiddlewareFactory */
+    private $factory;
+
+    public function setUp(): void
     {
         $this->authentication = $this->prophesize(AuthenticationInterface::class);
         $this->container = $this->prophesize(ContainerInterface::class);
         $this->factory = new AuthenticationMiddlewareFactory();
     }
 
-    /**
-     * @expectedException Mezzio\Authentication\Exception\InvalidConfigException
-     */
-    public function testInvokeWithNoAuthenticationService()
+    public function testInvokeWithNoAuthenticationService(): void
     {
-        $middleware = ($this->factory)($this->container->reveal());
+        $this->expectException(InvalidConfigException::class);
+        ($this->factory)($this->container->reveal());
     }
 
-    public function testInvokeWithAuthenticationService()
+    public function testInvokeWithAuthenticationService(): void
     {
         $this->container->has(AuthenticationInterface::class)
                         ->willReturn(true);
@@ -44,6 +50,6 @@ class AuthenticationMiddlewareFactoryTest extends TestCase
                         ->willReturn($this->authentication->reveal());
 
         $middleware = ($this->factory)($this->container->reveal());
-        $this->assertInstanceOf(AuthenticationMiddleware::class, $middleware);
+        $this->assertEquals(new AuthenticationMiddleware($this->authentication->reveal()), $middleware);
     }
 }

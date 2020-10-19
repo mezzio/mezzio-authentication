@@ -22,6 +22,9 @@ class AuthenticationMiddleware implements MiddlewareInterface
      */
     protected $auth;
 
+    /**
+     * @param AuthenticationInterface $auth
+     */
     public function __construct(AuthenticationInterface $auth)
     {
         $this->auth = $auth;

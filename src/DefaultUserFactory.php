@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Mezzio\Authentication;
 
 use Psr\Container\ContainerInterface;
+use Webmozart\Assert\Assert;
 
 /**
  * Produces a callable factory capable of itself producing a UserInterface
@@ -22,6 +23,9 @@ class DefaultUserFactory
     public function __invoke(ContainerInterface $container) : callable
     {
         return function (string $identity, array $roles = [], array $details = []) : UserInterface {
+            Assert::allString($roles);
+            Assert::isMap($details);
+
             return new DefaultUser($identity, $roles, $details);
         };
     }

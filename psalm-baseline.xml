@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="3.16@d03e5ef057d6adc656c0ff7e166c50b73b4f48f3">
+  <file src="src/AuthenticationMiddlewareFactory.php">
+    <MixedArgument occurrences="1">
+      <code>$authentication</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="1">
+      <code>$authentication</code>
+    </MixedAssignment>
+  </file>
+  <file src="src/UserRepository/HtpasswdFactory.php">
+    <MixedArgumentTypeCoercion occurrences="1">
+      <code>$user</code>
+    </MixedArgumentTypeCoercion>
+  </file>
+  <file src="src/UserRepository/PdoDatabaseFactory.php">
+    <MixedArgumentTypeCoercion occurrences="2">
+      <code>$user</code>
+      <code>$user</code>
+    </MixedArgumentTypeCoercion>
+  </file>
+  <file src="test/ExceptionTest.php">
+    <InvalidLiteralArgument occurrences="1">
+      <code>ExceptionInterface::class</code>
+    </InvalidLiteralArgument>
+    <PossiblyFalseOperand occurrences="1">
+      <code>strrpos(ExceptionInterface::class, '\\')</code>
+    </PossiblyFalseOperand>
+  </file>
+</files>

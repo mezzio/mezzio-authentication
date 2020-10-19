@@ -20,17 +20,24 @@ use PDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Webmozart\Assert\Assert;
 
 class PdoDatabaseTest extends TestCase
 {
-    protected function setUp()
+    /** @psalm-var callable(string, array<int|string, string>, array<string, mixed>): UserInterface */
+    private $userFactory;
+
+    protected function setUp(): void
     {
-        $this->userFactory = function ($identity, $roles, $details) {
+        $this->userFactory = static function (string $identity, array $roles, array $details): UserInterface {
+            Assert::allString($roles);
+            Assert::isMap($details);
+
             return new DefaultUser($identity, $roles, $details);
         };
     }
 
-    public function testConstructor()
+    public function testConstructor(): void
     {
         $pdoDatabase = new PdoDatabase(
             new PDO('sqlite::memory:'),
@@ -40,7 +47,10 @@ class PdoDatabaseTest extends TestCase
         $this->assertInstanceOf(UserRepositoryInterface::class, $pdoDatabase);
     }
 
-    public function getConfig()
+    /**
+     * @psalm-return array{table: string, field: array{identity: string, password: string}}
+     */
+    public function getConfig(): array
     {
         return [
             'table' => 'user',
@@ -51,7 +61,7 @@ class PdoDatabaseTest extends TestCase
         ];
     }
 
-    public function testAuthenticate()
+    public function testAuthenticate(): void
     {
         $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo.sqlite');
         $pdoDatabase = new PdoDatabase(
@@ -65,7 +75,7 @@ class PdoDatabaseTest extends TestCase
         $this->assertEquals('test', $user->getIdentity());
     }
 
-    public function testAuthenticationError()
+    public function testAuthenticationError(): void
     {
         $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo.sqlite');
         $config = $this->getConfig();
@@ -77,10 +87,10 @@ class PdoDatabaseTest extends TestCase
             $this->userFactory
         );
         $this->expectException(RuntimeException::class);
-        $user = $pdoDatabase->authenticate('test', 'password');
+        $pdoDatabase->authenticate('test', 'password');
     }
 
-    public function testAuthenticateInvalidUserPassword()
+    public function testAuthenticateInvalidUserPassword(): void
     {
         $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo.sqlite');
         $pdoDatabase = new PdoDatabase(
@@ -93,7 +103,7 @@ class PdoDatabaseTest extends TestCase
         $this->assertNull($user);
     }
 
-    public function testAuthenticateInvalidUsername()
+    public function testAuthenticateInvalidUsername(): void
     {
         $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo.sqlite');
         $pdoDatabase = new PdoDatabase(
@@ -106,7 +116,7 @@ class PdoDatabaseTest extends TestCase
         $this->assertNull($user);
     }
 
-    public function testAuthenticateWithRole()
+    public function testAuthenticateWithRole(): void
     {
         $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo_role.sqlite');
         $config = $this->getConfig();
@@ -123,7 +133,7 @@ class PdoDatabaseTest extends TestCase
         $this->assertEquals(['admin'], $user->getRoles());
     }
 
-    public function testAuthenticateWithRoles()
+    public function testAuthenticateWithRoles(): void
     {
         $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo_roles.sqlite');
         $config = $this->getConfig();
@@ -140,7 +150,7 @@ class PdoDatabaseTest extends TestCase
         $this->assertEquals(['user', 'admin'], $user->getRoles());
     }
 
-    public function testAuthenticateWithDetails()
+    public function testAuthenticateWithDetails(): void
     {
         $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo_role.sqlite');
         $config = $this->getConfig();
@@ -158,7 +168,7 @@ class PdoDatabaseTest extends TestCase
         $this->assertEquals('test@foo.com', $user->getDetail('email'));
     }
 
-    public function testAuthenticateWithRolesAndDetails()
+    public function testAuthenticateWithRolesAndDetails(): void
     {
         $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo_roles.sqlite');
         $config = $this->getConfig();
@@ -178,7 +188,7 @@ class PdoDatabaseTest extends TestCase
         $this->assertEquals(['user', 'admin'], $user->getRoles());
     }
 
-    public function testAuthenticateWithRoleRuntimeError()
+    public function testAuthenticateWithRoleRuntimeError(): void
     {
         $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo_role.sqlite');
         $config = $this->getConfig();
@@ -191,10 +201,10 @@ class PdoDatabaseTest extends TestCase
         );
 
         $this->expectException(RuntimeException::class);
-        $user = $pdoDatabase->authenticate('test', 'password');
+        $pdoDatabase->authenticate('test', 'password');
     }
 
-    public function testAuthenticateWithEmptySql()
+    public function testAuthenticateWithEmptySql(): void
     {
         $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo_roles.sqlite');
         $config = $this->getConfig();
@@ -209,7 +219,7 @@ class PdoDatabaseTest extends TestCase
         $this->assertEquals('test', $user->getIdentity());
     }
 
-    public function testAuthenticateWithNoIdentityParam()
+    public function testAuthenticateWithNoIdentityParam(): void
     {
         $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo_roles.sqlite');
         $config = $this->getConfig();
@@ -222,10 +232,13 @@ class PdoDatabaseTest extends TestCase
         );
 
         $this->expectException(InvalidConfigException::class);
-        $user = $pdoDatabase->authenticate('test', 'password');
+        $pdoDatabase->authenticate('test', 'password');
     }
 
-    public function getVoidPasswords()
+    /**
+     * @psalm-return list<list<string|null>>
+     */
+    public function getVoidPasswords(): array
     {
         return [
             [ null ],
@@ -236,7 +249,7 @@ class PdoDatabaseTest extends TestCase
     /**
      * @dataProvider getVoidPasswords
      */
-    public function testHandlesNullOrEmptyPassword($password)
+    public function testHandlesNullOrEmptyPassword(?string $password): void
     {
         $stmt = $this->prophesize(PDOStatement::class);
         $stmt->bindParam(Argument::any(), Argument::any())->willReturn();
