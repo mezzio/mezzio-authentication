@@ -16,10 +16,14 @@ use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepository\Htpasswd;
 use Mezzio\Authentication\UserRepositoryInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 
 class HtpasswdTest extends TestCase
 {
+    use ProphecyTrait;
+
     const EXAMPLE_IDENTITY = 'test';
 
     /** @psalm-var ObjectProphecy<UserInterface> */

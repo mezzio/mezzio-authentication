@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#7](https://github.com/mezzio/mezzio-authentication/pull/7) Adds PHP 8.0 support
 
 ### Changed
 

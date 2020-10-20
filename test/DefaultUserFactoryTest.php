@@ -13,15 +13,18 @@ namespace MezzioTest\Authentication;
 use Mezzio\Authentication\DefaultUser;
 use Mezzio\Authentication\DefaultUserFactory;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 
 class DefaultUserFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @psalm-var ObjectProphecy<ContainerInterface> */
     private $container;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->container = $this->prophesize(ContainerInterface::class);
     }

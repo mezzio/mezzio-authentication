@@ -15,11 +15,14 @@ use Mezzio\Authentication\AuthenticationMiddleware;
 use Mezzio\Authentication\AuthenticationMiddlewareFactory;
 use Mezzio\Authentication\Exception\InvalidConfigException;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 
 class AuthenticationMiddlewareFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @psalm-var ObjectProphecy<ContainerInterface> */
     private $container;
 
@@ -29,7 +32,7 @@ class AuthenticationMiddlewareFactoryTest extends TestCase
     /** @var AuthenticationMiddlewareFactory */
     private $factory;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->authentication = $this->prophesize(AuthenticationInterface::class);
         $this->container = $this->prophesize(ContainerInterface::class);

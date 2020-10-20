@@ -14,6 +14,7 @@ use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\AuthenticationMiddleware;
 use Mezzio\Authentication\UserInterface;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,6 +23,8 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class AuthenticationMiddlewareTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @psalm-var ObjectProphecy<AuthenticationInterface> */
     private $authentication;
 
@@ -34,7 +37,7 @@ class AuthenticationMiddlewareTest extends TestCase
     /** @psalm-var ObjectProphecy<RequestHandlerInterface> */
     private $handler;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->authentication = $this->prophesize(AuthenticationInterface::class);
         $this->request = $this->prophesize(ServerRequestInterface::class);
