@@ -15,11 +15,14 @@ use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepository\Htpasswd;
 use Mezzio\Authentication\UserRepository\HtpasswdFactory;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 
 class HtpasswdFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @psalm-var ObjectProphecy<ContainerInterface> */
     private $container;
 

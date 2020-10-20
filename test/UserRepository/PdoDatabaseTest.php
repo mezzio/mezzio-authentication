@@ -20,10 +20,13 @@ use PDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Webmozart\Assert\Assert;
 
 class PdoDatabaseTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @psalm-var callable(string, array<int|string, string>, array<string, mixed>): UserInterface */
     private $userFactory;
 
@@ -78,6 +81,9 @@ class PdoDatabaseTest extends TestCase
     public function testAuthenticationError(): void
     {
         $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo.sqlite');
+        /** @deprecated {@see https://wiki.php.net/rfc/pdo_default_errmode} */
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
+
         $config = $this->getConfig();
         $config['field']['identity'] = 'foo'; // mistake in the configuration
 
@@ -86,6 +92,7 @@ class PdoDatabaseTest extends TestCase
             $config,
             $this->userFactory
         );
+
         $this->expectException(RuntimeException::class);
         $pdoDatabase->authenticate('test', 'password');
     }

@@ -72,14 +72,14 @@ class PdoDatabaseFactory
             );
         }
 
-        return new PdoDatabase(
-            new PDO(
-                (string) $pdo['dsn'],
-                (string) ($pdo['username'] ?? null),
-                (string) ($pdo['password'] ?? null)
-            ),
-            $pdo,
-            $user
+        $connection = new PDO(
+            (string) $pdo['dsn'],
+            (string) ($pdo['username'] ?? null),
+            (string) ($pdo['password'] ?? null)
         );
+        /** @deprecated {@see https://wiki.php.net/rfc/pdo_default_errmode} */
+        $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
+
+        return new PdoDatabase($connection, $pdo, $user);
     }
 }

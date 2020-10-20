@@ -14,9 +14,12 @@ use Mezzio\Authentication\AuthenticationMiddleware;
 use Mezzio\Authentication\ConfigProvider;
 use Mezzio\Authentication\UserRepository;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 class ConfigProviderTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @var ConfigProvider */
     private $provider;
 

@@ -16,11 +16,14 @@ use Mezzio\Authentication\UserRepository\PdoDatabase;
 use Mezzio\Authentication\UserRepository\PdoDatabaseFactory;
 use PDO;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 
 class PdoDatabaseFactoryTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @psalm-var ObjectProphecy<ContainerInterface> */
     private $container;
 
@@ -115,6 +118,10 @@ class PdoDatabaseFactoryTest extends TestCase
      */
     public function testInvokeWithInvalidConfig(array $pdoConfig): void
     {
+        $this->expectException(InvalidConfigException::class);
+
+        $this->pdo->getAttribute(PDO::ATTR_ERRMODE)->willReturn(PDO::ERRMODE_SILENT);
+
         $this->container->get('config')->willReturn([
             'authentication' => ['pdo' => $pdoConfig]
         ]);
@@ -162,6 +169,8 @@ class PdoDatabaseFactoryTest extends TestCase
      */
     public function testInvokeWithValidConfig(array $pdoConfig): void
     {
+        $this->pdo->getAttribute(PDO::ATTR_ERRMODE)->willReturn(PDO::ERRMODE_SILENT);
+
         $this->container->get('config')->willReturn([
             'authentication' => ['pdo' => $pdoConfig]
         ]);
