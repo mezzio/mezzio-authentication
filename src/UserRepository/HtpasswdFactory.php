@@ -15,12 +15,14 @@ use Mezzio\Authentication\UserInterface;
 use Psr\Container\ContainerInterface;
 use Webmozart\Assert\Assert;
 
+use function sprintf;
+
 class HtpasswdFactory
 {
     /**
      * @throws Exception\InvalidConfigException
      */
-    public function __invoke(ContainerInterface $container) : Htpasswd
+    public function __invoke(ContainerInterface $container): Htpasswd
     {
         $config = $container->get('config');
         Assert::isMap($config);

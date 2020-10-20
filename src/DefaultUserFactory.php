@@ -20,9 +20,9 @@ use Webmozart\Assert\Assert;
  */
 class DefaultUserFactory
 {
-    public function __invoke(ContainerInterface $container) : callable
+    public function __invoke(ContainerInterface $container): callable
     {
-        return function (string $identity, array $roles = [], array $details = []) : UserInterface {
+        return function (string $identity, array $roles = [], array $details = []): UserInterface {
             Assert::allString($roles);
             Assert::isMap($details);
 

@@ -35,8 +35,8 @@ class AuthenticationMiddlewareFactoryTest extends TestCase
     protected function setUp(): void
     {
         $this->authentication = $this->prophesize(AuthenticationInterface::class);
-        $this->container = $this->prophesize(ContainerInterface::class);
-        $this->factory = new AuthenticationMiddlewareFactory();
+        $this->container      = $this->prophesize(ContainerInterface::class);
+        $this->factory        = new AuthenticationMiddlewareFactory();
     }
 
     public function testInvokeWithNoAuthenticationService(): void

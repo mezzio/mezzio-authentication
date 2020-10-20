@@ -31,7 +31,7 @@ class DefaultUserFactoryTest extends TestCase
 
     public function testInvokeWithIdentity(): void
     {
-        $factory = new DefaultUserFactory();
+        $factory     = new DefaultUserFactory();
         $userFactory = $factory($this->container->reveal());
         $defaultUser = $userFactory('foo');
         $this->assertInstanceOf(DefaultUser::class, $defaultUser);
@@ -40,7 +40,7 @@ class DefaultUserFactoryTest extends TestCase
 
     public function testInvokeWithIdentityAndRoles(): void
     {
-        $factory = new DefaultUserFactory();
+        $factory     = new DefaultUserFactory();
         $userFactory = $factory($this->container->reveal());
         $defaultUser = $userFactory('foo', ['admin', 'user']);
         $this->assertInstanceOf(DefaultUser::class, $defaultUser);
@@ -50,7 +50,7 @@ class DefaultUserFactoryTest extends TestCase
 
     public function testInvokeWithIdentityAndRolesAndDetails(): void
     {
-        $factory = new DefaultUserFactory();
+        $factory     = new DefaultUserFactory();
         $userFactory = $factory($this->container->reveal());
         $defaultUser = $userFactory('foo', ['admin', 'user'], ['email' => 'foo@test.com']);
         $this->assertInstanceOf(DefaultUser::class, $defaultUser);

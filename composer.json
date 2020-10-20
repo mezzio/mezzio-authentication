@@ -37,7 +37,7 @@
         "webmozart/assert": "^1.9"
     },
     "require-dev": {
-        "laminas/laminas-coding-standard": "~1.0.0",
+        "laminas/laminas-coding-standard": "^2.1",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpspec/prophecy": "^1.12",
         "phpunit/phpunit": "^9.3",
@@ -66,6 +66,7 @@
     "scripts": {
         "check": [
             "@cs-check",
+            "@static-analysis",
             "@test"
         ],
         "cs-check": "phpcs",

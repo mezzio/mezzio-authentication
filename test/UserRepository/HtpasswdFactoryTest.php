@@ -35,8 +35,8 @@ class HtpasswdFactoryTest extends TestCase
     protected function setUp(): void
     {
         $this->container = $this->prophesize(ContainerInterface::class);
-        $this->user = $this->prophesize(UserInterface::class);
-        $this->factory = new HtpasswdFactory();
+        $this->user      = $this->prophesize(UserInterface::class);
+        $this->factory   = new HtpasswdFactory();
     }
 
     public function testInvokeWithMissingConfig(): void
@@ -50,7 +50,7 @@ class HtpasswdFactoryTest extends TestCase
         ($this->factory)($this->container->reveal());
     }
 
-    public function testInvokeWithEmptyConfig() : void
+    public function testInvokeWithEmptyConfig(): void
     {
         $this->container->get('config')->willReturn([]);
         $this->container->get(UserInterface::class)->willReturn(
@@ -67,8 +67,8 @@ class HtpasswdFactoryTest extends TestCase
     {
         $this->container->get('config')->willReturn([
             'authentication' => [
-                'htpasswd' => 'foo'
-            ]
+                'htpasswd' => 'foo',
+            ],
         ]);
         $this->container->get(UserInterface::class)->willReturn(
             function () {
@@ -84,8 +84,8 @@ class HtpasswdFactoryTest extends TestCase
     {
         $this->container->get('config')->willReturn([
             'authentication' => [
-                'htpasswd' => $filename = __DIR__ . '/../TestAssets/htpasswd'
-            ]
+                'htpasswd' => $filename = __DIR__ . '/../TestAssets/htpasswd',
+            ],
         ]);
         $this->container->get(UserInterface::class)->willReturn(
             function () {

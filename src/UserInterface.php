@@ -15,20 +15,19 @@ interface UserInterface
     /**
      * Get the unique user identity (id, username, email address or ...)
      */
-    public function getIdentity() : string;
+    public function getIdentity(): string;
 
     /**
      * Get all user roles
      *
      * @psalm-return iterable<int|string, string>
      */
-    public function getRoles() : iterable;
+    public function getRoles(): iterable;
 
     /**
      * Get a detail $name if present, $default otherwise
      *
-     * @param mixed $default
-     *
+     * @param null|mixed $default
      * @return mixed
      */
     public function getDetail(string $name, $default = null);
@@ -38,5 +37,5 @@ interface UserInterface
      *
      * @psalm-return array<string, mixed>
      */
-    public function getDetails() : array;
+    public function getDetails(): array;
 }

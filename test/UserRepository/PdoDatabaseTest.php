@@ -60,13 +60,13 @@ class PdoDatabaseTest extends TestCase
             'field' => [
                 'identity' => 'username',
                 'password' => 'password',
-            ]
+            ],
         ];
     }
 
     public function testAuthenticate(): void
     {
-        $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo.sqlite');
+        $pdo         = new PDO('sqlite:' . __DIR__ . '/../TestAssets/pdo.sqlite');
         $pdoDatabase = new PdoDatabase(
             $pdo,
             $this->getConfig(),
@@ -80,11 +80,11 @@ class PdoDatabaseTest extends TestCase
 
     public function testAuthenticationError(): void
     {
-        $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo.sqlite');
+        $pdo = new PDO('sqlite:' . __DIR__ . '/../TestAssets/pdo.sqlite');
         /** @deprecated {@see https://wiki.php.net/rfc/pdo_default_errmode} */
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
-        $config = $this->getConfig();
+        $config                      = $this->getConfig();
         $config['field']['identity'] = 'foo'; // mistake in the configuration
 
         $pdoDatabase = new PdoDatabase(
@@ -99,7 +99,7 @@ class PdoDatabaseTest extends TestCase
 
     public function testAuthenticateInvalidUserPassword(): void
     {
-        $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo.sqlite');
+        $pdo         = new PDO('sqlite:' . __DIR__ . '/../TestAssets/pdo.sqlite');
         $pdoDatabase = new PdoDatabase(
             $pdo,
             $this->getConfig(),
@@ -112,7 +112,7 @@ class PdoDatabaseTest extends TestCase
 
     public function testAuthenticateInvalidUsername(): void
     {
-        $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo.sqlite');
+        $pdo         = new PDO('sqlite:' . __DIR__ . '/../TestAssets/pdo.sqlite');
         $pdoDatabase = new PdoDatabase(
             $pdo,
             $this->getConfig(),
@@ -125,8 +125,8 @@ class PdoDatabaseTest extends TestCase
 
     public function testAuthenticateWithRole(): void
     {
-        $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo_role.sqlite');
-        $config = $this->getConfig();
+        $pdo                     = new PDO('sqlite:' . __DIR__ . '/../TestAssets/pdo_role.sqlite');
+        $config                  = $this->getConfig();
         $config['sql_get_roles'] = 'SELECT role FROM user WHERE username = :identity';
 
         $pdoDatabase = new PdoDatabase(
@@ -142,25 +142,24 @@ class PdoDatabaseTest extends TestCase
 
     public function testAuthenticateWithRoles(): void
     {
-        $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo_roles.sqlite');
-        $config = $this->getConfig();
+        $pdo                     = new PDO('sqlite:' . __DIR__ . '/../TestAssets/pdo_roles.sqlite');
+        $config                  = $this->getConfig();
         $config['sql_get_roles'] = 'SELECT role FROM user_role WHERE username = :identity';
-
 
         $pdoDatabase = new PdoDatabase(
             $pdo,
             $config,
             $this->userFactory
         );
-        $user = $pdoDatabase->authenticate('test', 'password');
+        $user        = $pdoDatabase->authenticate('test', 'password');
         $this->assertInstanceOf(UserInterface::class, $user);
         $this->assertEquals(['user', 'admin'], $user->getRoles());
     }
 
     public function testAuthenticateWithDetails(): void
     {
-        $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo_role.sqlite');
-        $config = $this->getConfig();
+        $pdo                       = new PDO('sqlite:' . __DIR__ . '/../TestAssets/pdo_role.sqlite');
+        $config                    = $this->getConfig();
         $config['sql_get_details'] = 'SELECT email FROM user WHERE username = :identity';
 
         $pdoDatabase = new PdoDatabase(
@@ -177,9 +176,9 @@ class PdoDatabaseTest extends TestCase
 
     public function testAuthenticateWithRolesAndDetails(): void
     {
-        $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo_roles.sqlite');
-        $config = $this->getConfig();
-        $config['sql_get_roles'] = 'SELECT role FROM user_role WHERE username = :identity';
+        $pdo                       = new PDO('sqlite:' . __DIR__ . '/../TestAssets/pdo_roles.sqlite');
+        $config                    = $this->getConfig();
+        $config['sql_get_roles']   = 'SELECT role FROM user_role WHERE username = :identity';
         $config['sql_get_details'] = 'SELECT email FROM user WHERE username = :identity';
 
         $pdoDatabase = new PdoDatabase(
@@ -197,11 +196,11 @@ class PdoDatabaseTest extends TestCase
 
     public function testAuthenticateWithRoleRuntimeError(): void
     {
-        $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo_role.sqlite');
+        $pdo    = new PDO('sqlite:' . __DIR__ . '/../TestAssets/pdo_role.sqlite');
         $config = $this->getConfig();
         // add a mistake in the configuration
         $config['sql_get_roles'] = 'SELECT role FROM user WHERE foo = :identity';
-        $pdoDatabase = new PdoDatabase(
+        $pdoDatabase             = new PdoDatabase(
             $pdo,
             $config,
             $this->userFactory
@@ -213,7 +212,7 @@ class PdoDatabaseTest extends TestCase
 
     public function testAuthenticateWithEmptySql(): void
     {
-        $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo_roles.sqlite');
+        $pdo    = new PDO('sqlite:' . __DIR__ . '/../TestAssets/pdo_roles.sqlite');
         $config = $this->getConfig();
 
         $pdoDatabase = new PdoDatabase(
@@ -221,15 +220,15 @@ class PdoDatabaseTest extends TestCase
             $config,
             $this->userFactory
         );
-        $user = $pdoDatabase->authenticate('test', 'password');
+        $user        = $pdoDatabase->authenticate('test', 'password');
         $this->assertInstanceOf(UserInterface::class, $user);
         $this->assertEquals('test', $user->getIdentity());
     }
 
     public function testAuthenticateWithNoIdentityParam(): void
     {
-        $pdo = new PDO('sqlite:'. __DIR__ . '/../TestAssets/pdo_roles.sqlite');
-        $config = $this->getConfig();
+        $pdo                     = new PDO('sqlite:' . __DIR__ . '/../TestAssets/pdo_roles.sqlite');
+        $config                  = $this->getConfig();
         $config['sql_get_roles'] = 'SELECT role FROM user_role';
 
         $pdoDatabase = new PdoDatabase(
@@ -248,8 +247,8 @@ class PdoDatabaseTest extends TestCase
     public function getVoidPasswords(): array
     {
         return [
-            [ null ],
-            [ '' ]
+            [null],
+            [''],
         ];
     }
 
@@ -261,7 +260,7 @@ class PdoDatabaseTest extends TestCase
         $stmt = $this->prophesize(PDOStatement::class);
         $stmt->bindParam(Argument::any(), Argument::any())->willReturn();
         $stmt->execute(Argument::any())->willReturn();
-        $stmt->fetchObject()->willReturn((object)['password' => $password]);
+        $stmt->fetchObject()->willReturn((object) ['password' => $password]);
 
         $pdo = $this->prophesize(PDO::class);
         $pdo->prepare(Argument::any())->willReturn($stmt->reveal());

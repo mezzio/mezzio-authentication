@@ -20,6 +20,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Zend\Expressive\Authentication\UserInterface as ExpressiveUserInterface;
 
 class AuthenticationMiddlewareTest extends TestCase
 {
@@ -39,10 +40,10 @@ class AuthenticationMiddlewareTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->authentication = $this->prophesize(AuthenticationInterface::class);
-        $this->request = $this->prophesize(ServerRequestInterface::class);
+        $this->authentication    = $this->prophesize(AuthenticationInterface::class);
+        $this->request           = $this->prophesize(ServerRequestInterface::class);
         $this->authenticatedUser = $this->prophesize(UserInterface::class);
-        $this->handler = $this->prophesize(RequestHandlerInterface::class);
+        $this->handler           = $this->prophesize(RequestHandlerInterface::class);
     }
 
     public function testConstructor(): void
@@ -61,7 +62,7 @@ class AuthenticationMiddlewareTest extends TestCase
                              ->willReturn($response->reveal());
 
         $middleware = new AuthenticationMiddleware($this->authentication->reveal());
-        $result = $middleware->process($this->request->reveal(), $this->handler->reveal());
+        $result     = $middleware->process($this->request->reveal(), $this->handler->reveal());
 
         $this->assertEquals($response->reveal(), $result);
         $this->authentication->unauthorizedResponse($this->request->reveal())->shouldBeCalled();
@@ -75,7 +76,7 @@ class AuthenticationMiddlewareTest extends TestCase
             ->withAttribute(UserInterface::class, $this->authenticatedUser->reveal())
             ->willReturn($this->request->reveal());
         $this->request
-            ->withAttribute(\Zend\Expressive\Authentication\UserInterface::class, $this->authenticatedUser->reveal())
+            ->withAttribute(ExpressiveUserInterface::class, $this->authenticatedUser->reveal())
             ->willReturn($this->request->reveal());
         $this->authentication
             ->authenticate($this->request->reveal())
@@ -85,7 +86,7 @@ class AuthenticationMiddlewareTest extends TestCase
             ->willReturn($response->reveal());
 
         $middleware = new AuthenticationMiddleware($this->authentication->reveal());
-        $result = $middleware->process($this->request->reveal(), $this->handler->reveal());
+        $result     = $middleware->process($this->request->reveal(), $this->handler->reveal());
 
         $this->assertEquals($response->reveal(), $result);
         $this->handler->handle($this->request->reveal())->shouldBeCalled();

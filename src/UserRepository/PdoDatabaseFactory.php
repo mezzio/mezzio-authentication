@@ -21,12 +21,12 @@ class PdoDatabaseFactory
     /**
      * @throws Exception\InvalidConfigException
      */
-    public function __invoke(ContainerInterface $container) : PdoDatabase
+    public function __invoke(ContainerInterface $container): PdoDatabase
     {
         $config = $container->get('config');
         Assert::isMap($config);
         $authConfig = $config['authentication'] ?? [];
-        $pdo = $authConfig['pdo'] ?? null;
+        $pdo        = $authConfig['pdo'] ?? null;
 
         if (null === $pdo) {
             throw new Exception\InvalidConfigException(
