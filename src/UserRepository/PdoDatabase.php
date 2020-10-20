@@ -18,6 +18,10 @@ use PDOException;
 use stdClass;
 use Webmozart\Assert\Assert;
 
+use function password_verify;
+use function sprintf;
+use function strpos;
+
 /**
  * Adapter for PDO database
  *
@@ -25,26 +29,20 @@ use Webmozart\Assert\Assert;
  */
 class PdoDatabase implements UserRepositoryInterface
 {
-    /**
-     * @var PDO
-     */
+    /** @var PDO */
     private $pdo;
 
-    /**
-     * @var array<string, mixed>
-     */
+    /** @psalm-var array<string, mixed> */
     private $config;
 
     /**
      * @var callable
-     *
      * @psalm-var callable(string, array<int|string, string>, array<string, mixed>): UserInterface
      */
     private $userFactory;
 
     /**
-     * @param array<string, mixed> $config
-     *
+     * @psalm-param array<string, mixed> $config
      * @psalm-param callable(string, array<int|string, string>, array<string, mixed>): UserInterface $userFactory
      */
     public function __construct(
@@ -52,7 +50,7 @@ class PdoDatabase implements UserRepositoryInterface
         array $config,
         callable $userFactory
     ) {
-        $this->pdo = $pdo;
+        $this->pdo    = $pdo;
         $this->config = $config;
 
         // Provide type safety for the composed user factory.
@@ -60,7 +58,7 @@ class PdoDatabase implements UserRepositoryInterface
             string $identity,
             array $roles = [],
             array $details = []
-        ) use ($userFactory) : UserInterface {
+        ) use ($userFactory): UserInterface {
             Assert::allString($roles);
             Assert::isMap($details);
 
@@ -71,7 +69,7 @@ class PdoDatabase implements UserRepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function authenticate(string $credential, string $password = null) : ?UserInterface
+    public function authenticate(string $credential, ?string $password = null): ?UserInterface
     {
         $fields = $this->config['field'];
         Assert::isMap($fields);
@@ -86,8 +84,8 @@ class PdoDatabase implements UserRepositoryInterface
         $stmt = $this->pdo->prepare($sql);
         if (false === $stmt) {
             throw new Exception\RuntimeException(
-                'An error occurred when preparing to fetch user details from ' .
-                'the repository; please verify your configuration'
+                'An error occurred when preparing to fetch user details from '
+                . 'the repository; please verify your configuration'
             );
         }
         $stmt->bindParam(':identity', $credential);
@@ -115,11 +113,9 @@ class PdoDatabase implements UserRepositoryInterface
     /**
      * Get the user roles if present.
      *
-     * @return string[]
-     *
      * @psalm-return list<string>
      */
-    protected function getUserRoles(string $identity) : array
+    protected function getUserRoles(string $identity): array
     {
         if (! isset($this->config['sql_get_roles'])) {
             return [];
@@ -163,10 +159,9 @@ class PdoDatabase implements UserRepositoryInterface
     /**
      * Get the user details if present.
      *
-     * @param string $identity
      * @psalm-return array<string, mixed>
      */
-    protected function getUserDetails(string $identity) : array
+    protected function getUserDetails(string $identity): array
     {
         if (! isset($this->config['sql_get_details'])) {
             return [];

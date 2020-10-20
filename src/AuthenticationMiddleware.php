@@ -14,12 +14,11 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Zend\Expressive\Authentication\UserInterface as ExpressiveUserInterface;
 
 class AuthenticationMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var AuthenticationInterface
-     */
+    /** @var AuthenticationInterface */
     protected $auth;
 
     public function __construct(AuthenticationInterface $auth)
@@ -30,14 +29,14 @@ class AuthenticationMiddleware implements MiddlewareInterface
     /**
      * {@inheritDoc}
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $user = $this->auth->authenticate($request);
         if (null !== $user) {
             return $handler->handle(
                 $request
                     ->withAttribute(UserInterface::class, $user)
-                    ->withAttribute(\Zend\Expressive\Authentication\UserInterface::class, $user)
+                    ->withAttribute(ExpressiveUserInterface::class, $user)
             );
         }
         return $this->auth->unauthorizedResponse($request);

@@ -30,7 +30,7 @@ class ConfigProviderTest extends TestCase
 
     public function testProviderDefinesExpectedFactoryServices(): void
     {
-        $config = $this->provider->getDependencies();
+        $config    = $this->provider->getDependencies();
         $factories = $config['factories'];
 
         $this->assertArrayHasKey(AuthenticationMiddleware::class, $factories);

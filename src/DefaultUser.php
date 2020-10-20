@@ -20,19 +20,13 @@ namespace Mezzio\Authentication;
  */
 final class DefaultUser implements UserInterface
 {
-    /**
-     * @var string
-     */
+    /** @var string */
     private $identity;
 
-    /**
-     * @psalm-var array<int|string, string>
-     */
+    /** @psalm-var array<int|string, string> */
     private $roles;
 
-    /**
-     * @psalm-var array<string, mixed>
-     */
+    /** @psalm-var array<string, mixed> */
     private $details;
 
     /**
@@ -42,11 +36,11 @@ final class DefaultUser implements UserInterface
     public function __construct(string $identity, array $roles = [], array $details = [])
     {
         $this->identity = $identity;
-        $this->roles = $roles;
-        $this->details = $details;
+        $this->roles    = $roles;
+        $this->details  = $details;
     }
 
-    public function getIdentity() : string
+    public function getIdentity(): string
     {
         return $this->identity;
     }
@@ -54,7 +48,7 @@ final class DefaultUser implements UserInterface
     /**
      * @psalm-return array<int|string, string>
      */
-    public function getRoles() : array
+    public function getRoles(): array
     {
         return $this->roles;
     }
@@ -62,13 +56,13 @@ final class DefaultUser implements UserInterface
     /**
      * @psalm-return array<string, mixed>
      */
-    public function getDetails() : array
+    public function getDetails(): array
     {
         return $this->details;
     }
 
     /**
-     * @param mixed $default Default value to return if no detail matching
+     * @param null|mixed $default Default value to return if no detail matching
      *     $name is discovered.
      * @return mixed
      */

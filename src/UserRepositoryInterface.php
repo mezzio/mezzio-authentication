@@ -19,5 +19,5 @@ interface UserRepositoryInterface
      *
      * @param string $credential can be also a token
      */
-    public function authenticate(string $credential, string $password = null) : ?UserInterface;
+    public function authenticate(string $credential, ?string $password = null): ?UserInterface;
 }

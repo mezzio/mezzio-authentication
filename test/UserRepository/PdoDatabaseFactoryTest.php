@@ -20,6 +20,8 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 
+use function array_key_exists;
+
 class PdoDatabaseFactoryTest extends TestCase
 {
     use ProphecyTrait;
@@ -39,9 +41,9 @@ class PdoDatabaseFactoryTest extends TestCase
     protected function setUp(): void
     {
         $this->container = $this->prophesize(ContainerInterface::class);
-        $this->user = $this->prophesize(UserInterface::class);
-        $this->pdo = $this->prophesize(PDO::class);
-        $this->factory = new PdoDatabaseFactory();
+        $this->user      = $this->prophesize(UserInterface::class);
+        $this->pdo       = $this->prophesize(PDO::class);
+        $this->factory   = new PdoDatabaseFactory();
     }
 
     public function testInvokeWithMissingConfig(): void
@@ -72,44 +74,60 @@ class PdoDatabaseFactoryTest extends TestCase
     {
         return [
             [[]],
-            [[
-                'service' => PDO::class,
-            ]],
-            [[
-                'service' => PDO::class,
-                'table'   => 'test'
-            ]],
-            [[
-                'service' => PDO::class,
-                'table'   => 'test',
-                'field'   => []
-            ]],
-            [[
-                'service' => PDO::class,
-                'table'   => 'test',
-                'field'   => [
-                    'identity' => 'email',
-                ]
-            ]],
-            [[
-                'dsn' => 'mysql:dbname=testdb;host=127.0.0.1'
-            ]],
-            [[
-                'dsn'   => 'mysql:dbname=testdb;host=127.0.0.1',
-                'table' => 'test'
-            ]],
-            [[
-                'dsn'   => 'mysql:dbname=testdb;host=127.0.0.1',
-                'table' => 'test',
-                'field' => []
-            ]],
-            [[
-                'dsn'   => 'mysql:dbname=testdb;host=127.0.0.1',
-                'table' => 'test',
-                'field' => [
-                    'identity' => 'email'
-                ]
-            ]]
+            [
+                [
+                    'service' => PDO::class,
+                ],
+            ],
+            [
+                [
+                    'service' => PDO::class,
+                    'table'   => 'test',
+                ],
+            ],
+            [
+                [
+                    'service' => PDO::class,
+                    'table'   => 'test',
+                    'field'   => [],
+                ],
+            ],
+            [
+                [
+                    'service' => PDO::class,
+                    'table'   => 'test',
+                    'field'   => [
+                        'identity' => 'email',
+                    ],
+                ],
+            ],
+            [
+                [
+                    'dsn' => 'mysql:dbname=testdb;host=127.0.0.1',
+                ],
+            ],
+            [
+                [
+                    'dsn'   => 'mysql:dbname=testdb;host=127.0.0.1',
+                    'table' => 'test',
+                ],
+            ],
+            [
+                [
+                    'dsn'   => 'mysql:dbname=testdb;host=127.0.0.1',
+                    'table' => 'test',
+                    'field' => [],
+                ],
+            ],
+            [
+                [
+                    'dsn'   => 'mysql:dbname=testdb;host=127.0.0.1',
+                    'table' => 'test',
+                    'field' => [
+                        'identity' => 'email',
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -123,7 +141,7 @@ class PdoDatabaseFactoryTest extends TestCase
         $this->pdo->getAttribute(PDO::ATTR_ERRMODE)->willReturn(PDO::ERRMODE_SILENT);
 
         $this->container->get('config')->willReturn([
-            'authentication' => ['pdo' => $pdoConfig]
+            'authentication' => ['pdo' => $pdoConfig],
         ]);
         $this->container->has(PDO::class)->willReturn(true);
         $this->container->get(PDO::class)->willReturn($this->pdo->reveal());
@@ -143,28 +161,31 @@ class PdoDatabaseFactoryTest extends TestCase
     public function getPdoValidConfig(): array
     {
         return [
-            [[
-                'service' => PDO::class,
-                'table'   => 'user',
-                'field'   => [
-                    'identity' => 'username',
-                    'password' => 'password'
-                ]
-            ]],
-            [[
-                'dsn'   => 'sqlite:' . __DIR__ . '/../TestAssets/pdo.sqlite',
-                'table' => 'user',
-                'field' => [
-                    'identity' => 'username',
-                    'password' => 'password'
-                ]
-            ]],
+            [
+                [
+                    'service' => PDO::class,
+                    'table'   => 'user',
+                    'field'   => [
+                        'identity' => 'username',
+                        'password' => 'password',
+                    ],
+                ],
+            ],
+            [
+                [
+                    'dsn'   => 'sqlite:' . __DIR__ . '/../TestAssets/pdo.sqlite',
+                    'table' => 'user',
+                    'field' => [
+                        'identity' => 'username',
+                        'password' => 'password',
+                    ],
+                ],
+            ],
         ];
     }
 
     /**
      * @dataProvider getPdoValidConfig
-     *
      * @psalm-param array<string, mixed> $pdoConfig
      */
     public function testInvokeWithValidConfig(array $pdoConfig): void
@@ -172,7 +193,7 @@ class PdoDatabaseFactoryTest extends TestCase
         $this->pdo->getAttribute(PDO::ATTR_ERRMODE)->willReturn(PDO::ERRMODE_SILENT);
 
         $this->container->get('config')->willReturn([
-            'authentication' => ['pdo' => $pdoConfig]
+            'authentication' => ['pdo' => $pdoConfig],
         ]);
         $this->container->has(PDO::class)->willReturn(true);
         $this->container->get(PDO::class)->willReturn($this->pdo->reveal());

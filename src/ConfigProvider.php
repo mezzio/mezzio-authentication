@@ -10,25 +10,27 @@ declare(strict_types=1);
 
 namespace Mezzio\Authentication;
 
+use Zend\Expressive\Authentication as Expressive;
+
 class ConfigProvider
 {
     /**
      * Return the configuration array.
      *
-     * @return array<string, mixed>
+     * @psalm-return array<string, mixed>
      */
-    public function __invoke() : array
+    public function __invoke(): array
     {
         return [
             'authentication' => $this->getAuthenticationConfig(),
-            'dependencies' => $this->getDependencies(),
+            'dependencies'   => $this->getDependencies(),
         ];
     }
 
     /**
-     * @return array<empty>
+     * @psalm-return array<empty>
      */
-    public function getAuthenticationConfig() : array
+    public function getAuthenticationConfig(): array
     {
         return [
             /*
@@ -60,26 +62,26 @@ class ConfigProvider
      *
      * @psalm-return array<string, array<string, class-string>>
      */
-    public function getDependencies() : array
+    public function getDependencies(): array
     {
         return [
-            'aliases' => [
+            'aliases'   => [
                 // Provide an alias for the AuthenticationInterface based on the adapter you are using.
                 // AuthenticationInterface::class => Basic\BasicAccess::class,
                 // Provide an alias for the UserRepository adapter based on your application needs.
                 // UserRepositoryInterface::class => UserRepository\Htpasswd::class,
 
                 // Legacy Zend Framework aliases
-                \Zend\Expressive\Authentication\AuthenticationMiddleware::class => AuthenticationMiddleware::class,
-                \Zend\Expressive\Authentication\UserRepository\Htpasswd::class => UserRepository\Htpasswd::class,
-                \Zend\Expressive\Authentication\UserRepository\PdoDatabase::class => UserRepository\PdoDatabase::class,
-                \Zend\Expressive\Authentication\UserInterface::class => UserInterface::class,
+                Expressive\AuthenticationMiddleware::class   => AuthenticationMiddleware::class,
+                Expressive\UserRepository\Htpasswd::class    => UserRepository\Htpasswd::class,
+                Expressive\UserRepository\PdoDatabase::class => UserRepository\PdoDatabase::class,
+                Expressive\UserInterface::class              => UserInterface::class,
             ],
             'factories' => [
-                AuthenticationMiddleware::class => AuthenticationMiddlewareFactory::class,
-                UserRepository\Htpasswd::class => UserRepository\HtpasswdFactory::class,
+                AuthenticationMiddleware::class   => AuthenticationMiddlewareFactory::class,
+                UserRepository\Htpasswd::class    => UserRepository\HtpasswdFactory::class,
                 UserRepository\PdoDatabase::class => UserRepository\PdoDatabaseFactory::class,
-                UserInterface::class => DefaultUserFactory::class,
+                UserInterface::class              => DefaultUserFactory::class,
             ],
         ];
     }
