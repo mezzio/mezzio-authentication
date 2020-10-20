@@ -203,7 +203,7 @@
             </div>
 
             
-            <div class="col-4 text-sm-right">
+            <div class="col-4 text-right">
                 
                     
 
@@ -318,7 +318,6 @@ interface UserInterface
      */
     public function getDetails() : array;
 }</code></pre>
-
 <p>The <code>UserInterface</code> attribute in the PSR-7 request can be used for checking
 if a user has been authenticated or not, e.g. it can be used to verify the
 authorization level of a user (for this scope, it is consumed by
@@ -334,7 +333,6 @@ are unique to the application. As such, the default repository implementations
 we provide allow you to inject a <em>factory</em> for producing the user. This factory
 should be a PHP callable with the following signature:</p>
 <pre class="highlight"><code class="language-php">function (string $identity, array $roles = [], array $details = []) : UserInterface</code></pre>
-
 <p>In order to notify the package to use your custom factory, you will need to
 create a service factory that returns it, and map it to the
 <code>Mezzio\Authentication\UserInterface</code> service.</p>
@@ -355,7 +353,6 @@ return [
         ]
     ]
 ];</code></pre>
-
 <h2 id="usage-in-the-route">Usage in the Route</h2>
 <p>The <code>AuthenticationMiddleware</code> can be used to authenticate a route. You just
 need to add the class name of the middleware in the pipeline of a route.
@@ -364,7 +361,6 @@ As an example:</p>
     Mezzio\Authentication\AuthenticationMiddleware::class,
     Admin\Action\Dashboard::class
 ], 'admin.dashboard');</code></pre>
-
 <p>In this example, the <code>AuthenticationMiddleware</code> is executed as first middleware
 of the route <code>admin.dashboard</code>. If the user is authenticated, the application
 executes the <code>Dashboard</code> action; otherwise it returns a <code>401 Unauthorized</code>

@@ -203,7 +203,7 @@
             </div>
 
             
-            <div class="col-4 text-sm-right">
+            <div class="col-4 text-right">
                 
                     
 
@@ -295,7 +295,6 @@ interface AuthenticationInterface
      */
     public function unauthorizedResponse(ServerRequestInterface $request): ResponseInterface;
 }</code></pre>
-
 <p>This interface contains two method: <code>authenticate()</code> to check if a PSR-7
 request contains a valid credential, and <code>unauthorizedResponse()</code> to generate
 and return an unauthorized response.</p>
