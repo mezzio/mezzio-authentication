@@ -2,27 +2,30 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.2.0 - TBD
+## 1.2.0 - 2020-10-20
 
 ### Added
 
 - [#7](https://github.com/mezzio/mezzio-authentication/pull/7) Adds PHP 8.0 support
 
-### Changed
 
-- Nothing.
+-----
 
-### Deprecated
+### Release Notes for [1.2.0](https://github.com/mezzio/mezzio-authentication/milestone/1)
 
-- Nothing.
 
-### Removed
 
-- Nothing.
+### 1.2.0
 
-### Fixed
+- Total issues resolved: **1**
+- Total pull requests resolved: **3**
+- Total contributors: **2**
 
-- Nothing.
+#### Enhancement,hacktoberfest-accepted
+
+ - [8: feat: update to laminas coding standart v2](https://github.com/mezzio/mezzio-authentication/pull/8) thanks to @alexraputa
+ - [7: feat: add PHP 8 support](https://github.com/mezzio/mezzio-authentication/pull/7) thanks to @alexraputa
+ - [6: Add Psalm integration](https://github.com/mezzio/mezzio-authentication/pull/6) thanks to @alexraputa and @boesing
 
 ## 1.1.0 - 2019-03-05
 
