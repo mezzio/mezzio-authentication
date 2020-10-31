@@ -17,9 +17,5 @@
     <file>test</file>
 
     <!-- Include all rules from Laminas Coding Standard -->
-    <rule ref="LaminasCodingStandard">
-        <exclude name="WebimpressCodingStandard.Namespaces.UnusedUseStatement" />
-        <exclude name="WebimpressCodingStandard.Commenting.TagWithType.InvalidTypeFormat" />
-        <exclude name="WebimpressCodingStandard.Commenting.TagWithType.InvalidParamName" />
-    </rule>
+    <rule ref="LaminasCodingStandard"/>
 </ruleset>

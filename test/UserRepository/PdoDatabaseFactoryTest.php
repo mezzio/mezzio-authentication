@@ -132,6 +132,7 @@ class PdoDatabaseFactoryTest extends TestCase
     }
 
     /**
+     * @param array<string,mixed> $pdoConfig
      * @dataProvider getPdoInvalidConfig
      */
     public function testInvokeWithInvalidConfig(array $pdoConfig): void
