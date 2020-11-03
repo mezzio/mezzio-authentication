@@ -10,6 +10,7 @@ declare(strict_types=1);
 
 namespace Mezzio\Authentication\UserRepository;
 
+use ArrayAccess;
 use Mezzio\Authentication\Exception;
 use Mezzio\Authentication\UserInterface;
 use Psr\Container\ContainerInterface;
@@ -24,9 +25,10 @@ class HtpasswdFactory
      */
     public function __invoke(ContainerInterface $container): Htpasswd
     {
-        $config = $container->get('config');
-        Assert::isMap($config);
+        /** @var ArrayAccess<array-key,mixed> $config */
+        $config     = $container->get('config');
         $authConfig = $config['authentication'] ?? [];
+        Assert::isMap($authConfig);
 
         $htpasswd = $authConfig['htpasswd'] ?? null;
         Assert::nullOrString($htpasswd);
