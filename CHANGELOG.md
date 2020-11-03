@@ -2,29 +2,30 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.2.1 - TBD
-
-### Added
-
-- Nothing.
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
+## 1.2.1 - 2020-11-03
 
 ### Fixed
 
 - [#11](https://github.com/mezzio/mezzio-authentication/pull/11) Fixes an assertion error which was caused due to the implementation of Psalm in [#6](https://github.com/mezzio/mezzio-authentication/pull/6) and reported with [#10](https://github.com/mezzio/mezzio-authentication/issues/10). 
   
   Mezzio has support for multiple containers and some of those containers may return `ArrayObject` instead of an array.
+
+
+-----
+
+### Release Notes for [1.2.1](https://github.com/mezzio/mezzio-authentication/milestone/2)
+
+1.2.x bugfix release (patch)
+
+### 1.2.1
+
+- Total issues resolved: **1**
+- Total pull requests resolved: **1**
+- Total contributors: **2**
+
+#### Bug
+
+ - [11: hotfix: psalm regression after updating to 1.2.0](https://github.com/mezzio/mezzio-authentication/pull/11) thanks to @boesing and @seboettg
 
 ## 1.2.0 - 2020-10-20
 
