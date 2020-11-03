@@ -10,10 +10,14 @@ declare(strict_types=1);
 
 namespace MezzioTest\Authentication\UserRepository;
 
+use ArrayAccess;
+use ArrayObject;
+use Generator;
 use Mezzio\Authentication\Exception\InvalidConfigException;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepository\Htpasswd;
 use Mezzio\Authentication\UserRepository\HtpasswdFactory;
+use MezzioTest\Authentication\UserRepository\HtpasswdFactoryTest\ConfigImplementingArrayAccess;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
@@ -31,6 +35,34 @@ class HtpasswdFactoryTest extends TestCase
 
     /** @var HtpasswdFactory */
     private $factory;
+
+    /**
+     * @psalm-return Generator<string,array{0:mixed,1:non-empty-string}>
+     */
+    public function validConfigs(): Generator
+    {
+        $filename = __DIR__ . '/../TestAssets/htpasswd';
+        $config   = [
+            'authentication' => [
+                'htpasswd' => $filename,
+            ],
+        ];
+
+        yield 'array' => [
+            $config,
+            $filename,
+        ];
+
+        yield ArrayObject::class => [
+            new ArrayObject($config),
+            $filename,
+        ];
+
+        yield ArrayAccess::class => [
+            new ConfigImplementingArrayAccess($config),
+            $filename,
+        ];
+    }
 
     protected function setUp(): void
     {
@@ -80,13 +112,14 @@ class HtpasswdFactoryTest extends TestCase
         ($this->factory)($this->container->reveal());
     }
 
-    public function testInvokeWithValidConfig(): void
+    /**
+     * @psalm-param mixed $validConfig
+     * @psalm-param non-empty-string $filename
+     * @dataProvider validConfigs
+     */
+    public function testInvokeWithValidConfig($validConfig, string $filename): void
     {
-        $this->container->get('config')->willReturn([
-            'authentication' => [
-                'htpasswd' => $filename = __DIR__ . '/../TestAssets/htpasswd',
-            ],
-        ]);
+        $this->container->get('config')->willReturn($validConfig);
         $this->container->get(UserInterface::class)->willReturn(
             function () {
                 return $this->user->reveal();
