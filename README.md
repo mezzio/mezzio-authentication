@@ -1,7 +1,6 @@
 # Mezzio Authentication Middleware
 
-[![Build Status](https://travis-ci.com/mezzio/mezzio-authentication.svg?branch=master)](https://travis-ci.com/mezzio/mezzio-authentication)
-[![Coverage Status](https://coveralls.io/repos/github/mezzio/mezzio-authentication/badge.svg?branch=master)](https://coveralls.io/github/mezzio/mezzio-authentication?branch=master)
+[![Build Status](https://github.com/mezzio/mezzio-authentication/workflows/continuous-integration.yml/badge.svg)](https://github.com/mezzio/mezzio-authentication/actions/workflows/continuous-integration.yml)
 
 mezzio-authentication provides middleware for [Mezzio](https://docs.mezzio.dev/mezzio/)
 and [PSR-7](http://www.php-fig.org/psr/psr-7/) applications for the purpose of
