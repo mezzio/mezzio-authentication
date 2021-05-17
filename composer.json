@@ -1,7 +1,6 @@
 {
     "name": "mezzio/mezzio-authentication",
     "description": "Authentication middleware for Mezzio and PSR-7 applications",
-    "license": "BSD-3-Clause",
     "keywords": [
         "laminas",
         "mezzio",
@@ -12,22 +11,7 @@
         "psr-15"
     ],
     "homepage": "https://mezzio.dev",
-    "support": {
-        "docs": "https://docs.mezzio.dev/mezzio-authentication/",
-        "issues": "https://github.com/mezzio/mezzio-authentication/issues",
-        "source": "https://github.com/mezzio/mezzio-authentication",
-        "rss": "https://github.com/mezzio/mezzio-authentication/releases.atom",
-        "chat": "https://laminas.dev/chat",
-        "forum": "https://discourse.laminas.dev"
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "laminas": {
-            "config-provider": "Mezzio\\Authentication\\ConfigProvider"
-        }
-    },
+    "license": "BSD-3-Clause",
     "require": {
         "php": "^7.3 || ~8.0.0",
         "laminas/laminas-zendframework-bridge": "^1.0",
@@ -36,22 +20,33 @@
         "psr/http-server-middleware": "^1.0",
         "webmozart/assert": "^1.9"
     },
-    "require-dev": {
-        "laminas/laminas-coding-standard": "^2.1",
-        "phpspec/prophecy-phpunit": "^2.0",
-        "phpspec/prophecy": "^1.12",
-        "phpunit/phpunit": "^9.3",
-        "psalm/plugin-phpunit": "^0.12.2",
-        "vimeo/psalm": "^3.16"
+    "replace": {
+        "zendframework/zend-expressive-authentication": "^1.1.0"
     },
     "conflict": {
         "container-interop/container-interop": "<1.2.0"
+    },
+    "require-dev": {
+        "laminas/laminas-coding-standard": "^2.1",
+        "phpspec/prophecy": "^1.12",
+        "phpspec/prophecy-phpunit": "^2.0",
+        "phpunit/phpunit": "^9.3",
+        "psalm/plugin-phpunit": "^0.12.2",
+        "vimeo/psalm": "^3.16"
     },
     "suggest": {
         "ext-pdo": "*: for use with the PDO-backed UserRepositoryInterface implementation",
         "mezzio/mezzio-authentication-basic": "Provides an HTTP Basic Authentication AuthenticationInterface implementation",
         "mezzio/mezzio-authentication-laminasauthentication": "Provides a laminas-authentication AuthenticationInterface implementation",
         "mezzio/mezzio-authentication-session": "Provides a username/password + session AuthenticationInterface implementation"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laminas": {
+            "config-provider": "Mezzio\\Authentication\\ConfigProvider"
+        }
     },
     "autoload": {
         "psr-4": {
@@ -75,7 +70,12 @@
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
-    "replace": {
-        "zendframework/zend-expressive-authentication": "^1.1.0"
+    "support": {
+        "issues": "https://github.com/mezzio/mezzio-authentication/issues",
+        "forum": "https://discourse.laminas.dev",
+        "chat": "https://laminas.dev/chat",
+        "source": "https://github.com/mezzio/mezzio-authentication",
+        "docs": "https://docs.mezzio.dev/mezzio-authentication/",
+        "rss": "https://github.com/mezzio/mezzio-authentication/releases.atom"
     }
 }
