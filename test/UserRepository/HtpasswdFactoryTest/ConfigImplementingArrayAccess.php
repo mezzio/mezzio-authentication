@@ -13,8 +13,9 @@ use function assert;
 use function is_string;
 
 /**
- * @template-implements ArrayAccess<string,mixed>
  * @see ReturnTypeWillChange
+ *
+ * @template-implements ArrayAccess<string,mixed>
  */
 final class ConfigImplementingArrayAccess implements ArrayAccess
 {

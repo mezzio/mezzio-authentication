@@ -20,7 +20,8 @@ class ExceptionTest extends TestCase
      */
     public function exception(): iterable
     {
-        $namespace = substr(ExceptionInterface::class, 0, strrpos(ExceptionInterface::class, '\\') + 1);
+        /** @psalm-suppress InvalidLiteralArgument */
+        $namespace = substr(ExceptionInterface::class, 0, (int) strrpos(ExceptionInterface::class, '\\') + 1);
 
         $exceptions = glob(__DIR__ . '/../src/Exception/*.php');
         foreach ($exceptions as $exception) {

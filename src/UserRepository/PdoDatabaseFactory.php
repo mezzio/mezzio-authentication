@@ -18,9 +18,10 @@ class PdoDatabaseFactory
     public function __invoke(ContainerInterface $container): PdoDatabase
     {
         $config = $container->get('config');
-        Assert::isMap($config);
+        Assert::isArrayAccessible($config);
         $authConfig = $config['authentication'] ?? [];
-        $pdo        = $authConfig['pdo'] ?? null;
+        Assert::isArrayAccessible($authConfig);
+        $pdo = $authConfig['pdo'] ?? null;
 
         if (null === $pdo) {
             throw new Exception\InvalidConfigException(
@@ -53,6 +54,7 @@ class PdoDatabaseFactory
             $pdoService = $container->get((string) $pdo['service']);
             Assert::isInstanceOf($pdoService, PDO::class);
 
+            /** @psalm-suppress MixedArgumentTypeCoercion */
             return new PdoDatabase(
                 $pdoService,
                 $pdo,
@@ -74,6 +76,7 @@ class PdoDatabaseFactory
         /** @deprecated {@see https://wiki.php.net/rfc/pdo_default_errmode} */
         $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
+        /** @psalm-suppress MixedArgumentTypeCoercion */
         return new PdoDatabase($connection, $pdo, $user);
     }
 }
