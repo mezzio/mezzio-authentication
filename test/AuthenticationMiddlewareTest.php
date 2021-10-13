@@ -14,7 +14,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Expressive\Authentication\UserInterface as ExpressiveUserInterface;
 
 class AuthenticationMiddlewareTest extends TestCase
 {
@@ -69,9 +68,7 @@ class AuthenticationMiddlewareTest extends TestCase
         $this->request
             ->withAttribute(UserInterface::class, $this->authenticatedUser->reveal())
             ->willReturn($this->request->reveal());
-        $this->request
-            ->withAttribute(ExpressiveUserInterface::class, $this->authenticatedUser->reveal())
-            ->willReturn($this->request->reveal());
+
         $this->authentication
             ->authenticate($this->request->reveal())
             ->willReturn($this->authenticatedUser->reveal());

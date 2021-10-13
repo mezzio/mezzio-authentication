@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Mezzio\Authentication;
 
-use Zend\Expressive\Authentication as Expressive;
-
 class ConfigProvider
 {
     /**
@@ -59,18 +57,6 @@ class ConfigProvider
     public function getDependencies(): array
     {
         return [
-            'aliases'   => [
-                // Provide an alias for the AuthenticationInterface based on the adapter you are using.
-                // AuthenticationInterface::class => Basic\BasicAccess::class,
-                // Provide an alias for the UserRepository adapter based on your application needs.
-                // UserRepositoryInterface::class => UserRepository\Htpasswd::class,
-
-                // Legacy Zend Framework aliases
-                Expressive\AuthenticationMiddleware::class   => AuthenticationMiddleware::class,
-                Expressive\UserRepository\Htpasswd::class    => UserRepository\Htpasswd::class,
-                Expressive\UserRepository\PdoDatabase::class => UserRepository\PdoDatabase::class,
-                Expressive\UserInterface::class              => UserInterface::class,
-            ],
             'factories' => [
                 AuthenticationMiddleware::class   => AuthenticationMiddlewareFactory::class,
                 UserRepository\Htpasswd::class    => UserRepository\HtpasswdFactory::class,

@@ -37,7 +37,7 @@
     },
     "require-dev": {
         "ext-sqlite3": "*",
-        "laminas/laminas-coding-standard": "~2.2.0",
+        "laminas/laminas-coding-standard": "~2.3.0",
         "phpspec/prophecy": "^1.12",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpunit/phpunit": "^9.3",

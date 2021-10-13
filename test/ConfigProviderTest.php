@@ -41,7 +41,6 @@ class ConfigProviderTest extends TestCase
 
         $this->assertArrayHasKey('dependencies', $config);
         $this->assertIsArray($config['dependencies']);
-        $this->assertArrayHasKey('aliases', $config['dependencies']);
         $this->assertArrayHasKey('factories', $config['dependencies']);
     }
 }
