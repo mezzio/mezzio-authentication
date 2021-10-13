@@ -6,6 +6,7 @@ namespace MezzioTest\Authentication\UserRepository\HtpasswdFactoryTest;
 
 use ArrayAccess;
 use OutOfBoundsException;
+use ReturnTypeWillChange;
 
 use function array_key_exists;
 use function assert;
@@ -13,6 +14,7 @@ use function is_string;
 
 /**
  * @template-implements ArrayAccess<string,mixed>
+ * @see ReturnTypeWillChange
  */
 final class ConfigImplementingArrayAccess implements ArrayAccess
 {
@@ -29,9 +31,8 @@ final class ConfigImplementingArrayAccess implements ArrayAccess
 
     /**
      * @psalm-param array-key $offset
-     * @return bool
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->data);
     }
@@ -40,6 +41,7 @@ final class ConfigImplementingArrayAccess implements ArrayAccess
      * @psalm-param array-key $offset
      * @return mixed
      */
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         if (! $this->offsetExists($offset)) {
@@ -53,7 +55,7 @@ final class ConfigImplementingArrayAccess implements ArrayAccess
      * @psalm-param array-key $offset
      * @param mixed $value
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         assert(is_string($offset));
         $this->data[$offset] = $value;
@@ -62,7 +64,7 @@ final class ConfigImplementingArrayAccess implements ArrayAccess
     /**
      * @psalm-param array-key $offset
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->data[$offset]);
     }
