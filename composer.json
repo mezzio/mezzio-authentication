@@ -36,7 +36,7 @@
         "webmozart/assert": "^1.9"
     },
     "require-dev": {
-        "ext-pdo_sqlite": "*",
+        "ext-sqlite3": "*",
         "laminas/laminas-coding-standard": "~2.2.0",
         "phpspec/prophecy": "^1.12",
         "phpspec/prophecy-phpunit": "^2.0",
