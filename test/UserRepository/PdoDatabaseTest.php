@@ -252,8 +252,8 @@ class PdoDatabaseTest extends TestCase
     public function testHandlesNullOrEmptyPassword(?string $password): void
     {
         $stmt = $this->prophesize(PDOStatement::class);
-        $stmt->bindParam(Argument::any(), Argument::any())->willReturn();
-        $stmt->execute(Argument::any())->willReturn();
+        $stmt->bindParam(Argument::any(), Argument::any())->willReturn(true);
+        $stmt->execute(Argument::any())->willReturn(true);
         $stmt->fetchObject()->willReturn((object) ['password' => $password]);
 
         $pdo = $this->prophesize(PDO::class);
