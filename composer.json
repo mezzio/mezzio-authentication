@@ -29,24 +29,24 @@
         }
     },
     "require": {
-        "php": "^7.3 || ~8.0.0",
-        "laminas/laminas-zendframework-bridge": "^1.0",
+        "php": "^7.4 || ~8.0.0 || ~8.1.0",
         "psr/container": "^1.0",
         "psr/http-message": "^1.0.1",
         "psr/http-server-middleware": "^1.0",
         "webmozart/assert": "^1.9"
     },
     "require-dev": {
-        "ext-pdo_sqlite": "*",
-        "laminas/laminas-coding-standard": "~2.2.0",
-        "phpspec/prophecy": "^1.12",
+        "ext-sqlite3": "*",
+        "laminas/laminas-coding-standard": "~2.3.0",
+        "phpspec/prophecy": "^1.14",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpunit/phpunit": "^9.3",
-        "psalm/plugin-phpunit": "^0.12.2",
-        "vimeo/psalm": "^3.16"
+        "phpunit/phpunit": "^9.5.5",
+        "psalm/plugin-phpunit": "^0.16.1",
+        "vimeo/psalm": "^4.10"
     },
     "conflict": {
-        "container-interop/container-interop": "<1.2.0"
+        "container-interop/container-interop": "<1.2.0",
+        "zendframework/zend-expressive-authentication": "*"
     },
     "suggest": {
         "ext-pdo": "*: for use with the PDO-backed UserRepositoryInterface implementation",
@@ -75,8 +75,5 @@
         "static-analysis": "psalm --shepherd --stats",
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
-    },
-    "replace": {
-        "zendframework/zend-expressive-authentication": "^1.1.0"
     }
 }

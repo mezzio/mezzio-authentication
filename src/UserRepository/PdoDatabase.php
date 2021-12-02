@@ -9,7 +9,6 @@ use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepositoryInterface;
 use PDO;
 use PDOException;
-use stdClass;
 use Webmozart\Assert\Assert;
 
 use function password_verify;
@@ -90,7 +89,6 @@ class PdoDatabase implements UserRepositoryInterface
             return null;
         }
 
-        Assert::isInstanceOf($result, stdClass::class);
         Assert::string($credential);
         $passwordHash = (string) ($result->{$fields['password']} ?? '');
 

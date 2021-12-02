@@ -6,7 +6,6 @@ namespace Mezzio\Authentication;
 
 use Psr\Container\ContainerInterface;
 use Webmozart\Assert\Assert;
-use Zend\Expressive\Authentication\AuthenticationInterface as ExpressiveAuthenticationInterface;
 
 class AuthenticationMiddlewareFactory
 {
@@ -14,13 +13,9 @@ class AuthenticationMiddlewareFactory
     {
         $authentication = $container->has(AuthenticationInterface::class)
             ? $container->get(AuthenticationInterface::class)
-            : ($container->has(ExpressiveAuthenticationInterface::class)
-                ? $container->get(ExpressiveAuthenticationInterface::class)
-                : null);
-        Assert::nullOrIsInstanceOfAny($authentication, [
-            AuthenticationInterface::class,
-            ExpressiveAuthenticationInterface::class,
-        ]);
+            : null;
+
+        Assert::nullOrIsInstanceOf($authentication, AuthenticationInterface::class);
 
         if (null === $authentication) {
             throw new Exception\InvalidConfigException(

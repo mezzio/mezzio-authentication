@@ -36,7 +36,7 @@ class HtpasswdFactory
 
         $user = $container->get(UserInterface::class);
         Assert::isCallable($user);
-
+        /** @psalm-suppress MixedArgumentTypeCoercion */
         return new Htpasswd($htpasswd, $user);
     }
 }
