@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8f13816bb8dcb521b873f7055acc2a76",
+    "content-hash": "c9deeb8271e85ab390a513b2c6ca2665",
     "packages": [
         {
             "name": "psr/container",
@@ -4359,5 +4359,5 @@
     "platform-dev": {
         "ext-sqlite3": "*"
     },
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.2.0"
 }
