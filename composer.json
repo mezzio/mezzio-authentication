@@ -21,7 +21,11 @@
         "forum": "https://discourse.laminas.dev"
     },
     "config": {
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "composer/package-versions-deprecated": true
+        }
     },
     "extra": {
         "laminas": {
@@ -39,8 +43,8 @@
         "ext-sqlite3": "*",
         "laminas/laminas-coding-standard": "~2.3.0",
         "phpspec/prophecy": "^1.14",
-        "phpspec/prophecy-phpunit": "^2.0",
-        "phpunit/phpunit": "^9.5.5",
+        "phpspec/prophecy-phpunit": "^v2.0.1",
+        "phpunit/phpunit": "^9.5.11",
         "psalm/plugin-phpunit": "^0.16.1",
         "vimeo/psalm": "^4.10"
     },
