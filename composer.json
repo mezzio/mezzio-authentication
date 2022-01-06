@@ -46,7 +46,7 @@
         "phpspec/prophecy-phpunit": "^v2.0.1",
         "phpunit/phpunit": "^9.5.11",
         "psalm/plugin-phpunit": "^0.16.1",
-        "vimeo/psalm": "^4.10"
+        "vimeo/psalm": "^4.17.0"
     },
     "conflict": {
         "container-interop/container-interop": "<1.2.0",
