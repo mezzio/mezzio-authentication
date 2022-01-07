@@ -35,6 +35,9 @@ class AuthenticationMiddlewareFactoryTest extends TestCase
 
     public function testInvokeWithNoAuthenticationService(): void
     {
+        $this->container->has(AuthenticationInterface::class)
+                        ->willReturn(false);
+
         $this->expectException(InvalidConfigException::class);
         ($this->factory)($this->container->reveal());
     }
