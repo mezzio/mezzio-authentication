@@ -50,6 +50,22 @@ if a user has been authenticated or not, e.g. it can be used to verify the
 authorization level of a user (for this scope, it is consumed by
 [mezzio-authorization](https://github.com/mezzio/mezzio-authorization)).
 
+For example:
+
+```
+// Retrieve the UserInterface object from the request.
+$user = $request->getAttribute(UserInterface::class);
+
+// Retrieve the user's identity.
+$user->getIdentity();
+
+// Retrieve the user's roles (if any).
+$user->getRoles();
+
+// Retrieve the user's other details (if any).
+$user->getDetails();
+```
+
 ## Default User Class
 
 We provide a default implementation of `UserInterface` via the class
