@@ -52,7 +52,7 @@ authorization level of a user (for this scope, it is consumed by
 
 For example:
 
-```
+```php
 // Retrieve the UserInterface object from the request.
 $user = $request->getAttribute(UserInterface::class);
 
