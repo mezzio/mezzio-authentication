@@ -14,8 +14,7 @@ namespace Mezzio\Authentication;
  */
 final class DefaultUser implements UserInterface
 {
-    /** @var string */
-    private $identity;
+    private string $identity;
 
     /** @psalm-var array<int|string, string> */
     private $roles;

@@ -22,8 +22,7 @@ use function strpos;
  */
 class PdoDatabase implements UserRepositoryInterface
 {
-    /** @var PDO */
-    private $pdo;
+    private PDO $pdo;
 
     /** @psalm-var array<string, mixed> */
     private $config;
