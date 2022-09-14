@@ -14,8 +14,7 @@ class ConfigProviderTest extends TestCase
 {
     use ProphecyTrait;
 
-    /** @var ConfigProvider */
-    private $provider;
+    private ConfigProvider $provider;
 
     protected function setUp(): void
     {

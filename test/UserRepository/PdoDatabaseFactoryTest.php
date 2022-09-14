@@ -29,8 +29,7 @@ class PdoDatabaseFactoryTest extends TestCase
     /** @psalm-var ObjectProphecy<PDO> */
     private $pdo;
 
-    /** @var PdoDatabaseFactory */
-    private $factory;
+    private PdoDatabaseFactory $factory;
 
     protected function setUp(): void
     {
@@ -141,9 +140,7 @@ class PdoDatabaseFactoryTest extends TestCase
         $this->container->has(PDO::class)->willReturn(true);
         $this->container->get(PDO::class)->willReturn($this->pdo->reveal());
         $this->container->get(UserInterface::class)->willReturn(
-            function () {
-                return $this->user->reveal();
-            }
+            fn() => $this->user->reveal()
         );
 
         $this->expectException(InvalidConfigException::class);
@@ -193,17 +190,13 @@ class PdoDatabaseFactoryTest extends TestCase
         $this->container->has(PDO::class)->willReturn(true);
         $this->container->get(PDO::class)->willReturn($this->pdo->reveal());
         $this->container->get(UserInterface::class)->willReturn(
-            function () {
-                return $this->user->reveal();
-            }
+            fn() => $this->user->reveal()
         );
         $pdoDatabase = ($this->factory)($this->container->reveal());
         $this->assertEquals(new PdoDatabase(
             array_key_exists('dsn', $pdoConfig) ? new PDO((string) $pdoConfig['dsn']) : $this->pdo->reveal(),
             $pdoConfig,
-            function () {
-                return $this->user->reveal();
-            }
+            fn() => $this->user->reveal()
         ), $pdoDatabase);
     }
 }

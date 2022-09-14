@@ -27,8 +27,7 @@ class HtpasswdFactoryTest extends TestCase
     /** @psalm-var ObjectProphecy<UserInterface> */
     private $user;
 
-    /** @var HtpasswdFactory */
-    private $factory;
+    private HtpasswdFactory $factory;
 
     /**
      * @psalm-return Generator<string,array{0:mixed,1:non-empty-string}>
@@ -80,9 +79,7 @@ class HtpasswdFactoryTest extends TestCase
     {
         $this->container->get('config')->willReturn([]);
         $this->container->get(UserInterface::class)->willReturn(
-            function () {
-                return $this->user->reveal();
-            }
+            fn() => $this->user->reveal()
         );
 
         $this->expectException(InvalidConfigException::class);
@@ -97,9 +94,7 @@ class HtpasswdFactoryTest extends TestCase
             ],
         ]);
         $this->container->get(UserInterface::class)->willReturn(
-            function () {
-                return $this->user->reveal();
-            }
+            fn() => $this->user->reveal()
         );
 
         $this->expectException(InvalidConfigException::class);
@@ -115,17 +110,13 @@ class HtpasswdFactoryTest extends TestCase
     {
         $this->container->get('config')->willReturn($validConfig);
         $this->container->get(UserInterface::class)->willReturn(
-            function () {
-                return $this->user->reveal();
-            }
+            fn() => $this->user->reveal()
         );
 
         $htpasswd = ($this->factory)($this->container->reveal());
         $this->assertEquals(new Htpasswd(
             $filename,
-            function () {
-                return $this->user->reveal();
-            }
+            fn() => $this->user->reveal()
         ), $htpasswd);
     }
 }

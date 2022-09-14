@@ -27,8 +27,7 @@ use function trim;
  */
 class Htpasswd implements UserRepositoryInterface
 {
-    /** @var string */
-    private $filename;
+    private string $filename;
 
     /**
      * @var callable

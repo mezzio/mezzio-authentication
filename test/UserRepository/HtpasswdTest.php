@@ -34,9 +34,7 @@ class HtpasswdTest extends TestCase
 
         new Htpasswd(
             'foo',
-            function () {
-                return $this->user->reveal();
-            }
+            fn() => $this->user->reveal()
         );
     }
 
@@ -44,9 +42,7 @@ class HtpasswdTest extends TestCase
     {
         $htpasswd = new Htpasswd(
             __DIR__ . '/../TestAssets/htpasswd',
-            function () {
-                return $this->user->reveal();
-            }
+            fn() => $this->user->reveal()
         );
         $this->assertInstanceOf(UserRepositoryInterface::class, $htpasswd);
     }
@@ -55,9 +51,7 @@ class HtpasswdTest extends TestCase
     {
         $htpasswd = new Htpasswd(
             __DIR__ . '/../TestAssets/htpasswd',
-            function () {
-                return $this->user->reveal();
-            }
+            fn() => $this->user->reveal()
         );
 
         $user = $htpasswd->authenticate(self::EXAMPLE_IDENTITY, 'password');
@@ -69,9 +63,7 @@ class HtpasswdTest extends TestCase
     {
         $htpasswd = new Htpasswd(
             __DIR__ . '/../TestAssets/htpasswd',
-            function () {
-                return $this->user->reveal();
-            }
+            fn() => $this->user->reveal()
         );
         $this->assertNull($htpasswd->authenticate(self::EXAMPLE_IDENTITY, 'foo'));
     }
@@ -80,9 +72,7 @@ class HtpasswdTest extends TestCase
     {
         $htpasswd = new Htpasswd(
             __DIR__ . '/../TestAssets/htpasswd',
-            function () {
-                return $this->user->reveal();
-            }
+            fn() => $this->user->reveal()
         );
         $this->assertNull($htpasswd->authenticate(self::EXAMPLE_IDENTITY, null));
     }
@@ -93,9 +83,7 @@ class HtpasswdTest extends TestCase
 
         $htpasswd = new Htpasswd(
             __DIR__ . '/../TestAssets/htpasswd_insecure',
-            function () {
-                return $this->user->reveal();
-            }
+            fn() => $this->user->reveal()
         );
         $htpasswd->authenticate(self::EXAMPLE_IDENTITY, 'password');
     }

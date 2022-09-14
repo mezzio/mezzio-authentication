@@ -23,8 +23,7 @@ class AuthenticationMiddlewareFactoryTest extends TestCase
     /** @psalm-var ObjectProphecy<AuthenticationInterface> */
     private $authentication;
 
-    /** @var AuthenticationMiddlewareFactory */
-    private $factory;
+    private AuthenticationMiddlewareFactory $factory;
 
     protected function setUp(): void
     {

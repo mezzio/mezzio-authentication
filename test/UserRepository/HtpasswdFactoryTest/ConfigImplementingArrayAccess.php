@@ -20,7 +20,7 @@ use function is_string;
 final class ConfigImplementingArrayAccess implements ArrayAccess
 {
     /** @var array<array-key,mixed> */
-    private $data;
+    private array $data;
 
     /**
      * @param array<string,mixed> $data
