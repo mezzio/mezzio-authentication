@@ -25,6 +25,9 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "composer/package-versions-deprecated": true
+        },
+        "platform": {
+            "php": "7.4.99"
         }
     },
     "extra": {
@@ -44,9 +47,9 @@
         "laminas/laminas-coding-standard": "~2.4.0",
         "phpspec/prophecy": "^1.14",
         "phpspec/prophecy-phpunit": "^v2.0.1",
-        "phpunit/phpunit": "^9.5.11",
+        "phpunit/phpunit": "^9.5.24",
         "psalm/plugin-phpunit": "^0.17.0",
-        "vimeo/psalm": "^4.17.0"
+        "vimeo/psalm": "^4.27.0"
     },
     "conflict": {
         "container-interop/container-interop": "<1.2.0",
