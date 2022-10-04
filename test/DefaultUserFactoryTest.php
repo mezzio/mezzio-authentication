@@ -6,51 +6,55 @@ namespace MezzioTest\Authentication;
 
 use Mezzio\Authentication\DefaultUser;
 use Mezzio\Authentication\DefaultUserFactory;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 
-class DefaultUserFactoryTest extends TestCase
+/** @covers \Mezzio\Authentication\DefaultUserFactory */
+final class DefaultUserFactoryTest extends TestCase
 {
-    use ProphecyTrait;
+    /** @var ContainerInterface&MockObject */
+    private ContainerInterface $container;
 
-    /** @psalm-var ObjectProphecy<ContainerInterface> */
-    private $container;
+    private DefaultUserFactory $factory;
 
     protected function setUp(): void
     {
-        $this->container = $this->prophesize(ContainerInterface::class);
+        parent::setUp();
+
+        $this->container = $this->createMock(ContainerInterface::class);
+
+        $this->factory = new DefaultUserFactory();
     }
 
     public function testInvokeWithIdentity(): void
     {
-        $factory     = new DefaultUserFactory();
-        $userFactory = $factory($this->container->reveal());
+        $userFactory = $this->factory->__invoke($this->container);
         $defaultUser = $userFactory('foo');
-        $this->assertInstanceOf(DefaultUser::class, $defaultUser);
-        $this->assertEquals('foo', $defaultUser->getIdentity());
+
+        self::assertInstanceOf(DefaultUser::class, $defaultUser);
+        self::assertSame('foo', $defaultUser->getIdentity());
     }
 
     public function testInvokeWithIdentityAndRoles(): void
     {
-        $factory     = new DefaultUserFactory();
-        $userFactory = $factory($this->container->reveal());
+        $userFactory = $this->factory->__invoke($this->container);
         $defaultUser = $userFactory('foo', ['admin', 'user']);
-        $this->assertInstanceOf(DefaultUser::class, $defaultUser);
-        $this->assertEquals('foo', $defaultUser->getIdentity());
-        $this->assertEquals(['admin', 'user'], $defaultUser->getRoles());
+
+        self::assertInstanceOf(DefaultUser::class, $defaultUser);
+        self::assertSame('foo', $defaultUser->getIdentity());
+        self::assertSame(['admin', 'user'], $defaultUser->getRoles());
     }
 
     public function testInvokeWithIdentityAndRolesAndDetails(): void
     {
-        $factory     = new DefaultUserFactory();
-        $userFactory = $factory($this->container->reveal());
+        $userFactory = $this->factory->__invoke($this->container);
         $defaultUser = $userFactory('foo', ['admin', 'user'], ['email' => 'foo@test.com']);
-        $this->assertInstanceOf(DefaultUser::class, $defaultUser);
-        $this->assertEquals('foo', $defaultUser->getIdentity());
-        $this->assertEquals(['admin', 'user'], $defaultUser->getRoles());
-        $this->assertEquals(['email' => 'foo@test.com'], $defaultUser->getDetails());
-        $this->assertEquals('foo@test.com', $defaultUser->getDetail('email'));
+
+        self::assertInstanceOf(DefaultUser::class, $defaultUser);
+        self::assertSame('foo', $defaultUser->getIdentity());
+        self::assertSame(['admin', 'user'], $defaultUser->getRoles());
+        self::assertSame(['email' => 'foo@test.com'], $defaultUser->getDetails());
+        self::assertSame('foo@test.com', $defaultUser->getDetail('email'));
     }
 }

@@ -13,7 +13,7 @@ use function is_a;
 use function strrpos;
 use function substr;
 
-class ExceptionTest extends TestCase
+final class ExceptionTest extends TestCase
 {
     /**
      * @psalm-return iterable<string, list<string>>
@@ -36,7 +36,7 @@ class ExceptionTest extends TestCase
      */
     public function testExceptionIsInstanceOfExceptionInterface(string $exception): void
     {
-        $this->assertStringContainsString('Exception', $exception);
-        $this->assertTrue(is_a($exception, ExceptionInterface::class, true));
+        self::assertStringContainsString('Exception', $exception);
+        self::assertTrue(is_a($exception, ExceptionInterface::class, true));
     }
 }

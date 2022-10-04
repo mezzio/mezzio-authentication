@@ -9,23 +9,27 @@ use Mezzio\Authentication\Exception\RuntimeException;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepository\Htpasswd;
 use Mezzio\Authentication\UserRepositoryInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
 
-class HtpasswdTest extends TestCase
+/** @covers \Mezzio\Authentication\UserRepository\Htpasswd */
+final class HtpasswdTest extends TestCase
 {
-    use ProphecyTrait;
-
     private const EXAMPLE_IDENTITY = 'test';
 
-    /** @psalm-var ObjectProphecy<UserInterface> */
-    private $user;
+    /** @var UserInterface&MockObject */
+    private UserInterface $user;
 
     protected function setUp(): void
     {
-        $this->user = $this->prophesize(UserInterface::class);
-        $this->user->getIdentity()->willReturn(self::EXAMPLE_IDENTITY);
+        parent::setUp();
+
+        $this->user = $this->createMock(UserInterface::class);
+
+        $this->user
+            ->expects(self::any())
+            ->method('getIdentity')
+            ->willReturn(self::EXAMPLE_IDENTITY);
     }
 
     public function testConstructorWithNoFile(): void
@@ -34,7 +38,7 @@ class HtpasswdTest extends TestCase
 
         new Htpasswd(
             'foo',
-            fn() => $this->user->reveal()
+            fn (): UserInterface => $this->user
         );
     }
 
@@ -42,39 +46,43 @@ class HtpasswdTest extends TestCase
     {
         $htpasswd = new Htpasswd(
             __DIR__ . '/../TestAssets/htpasswd',
-            fn() => $this->user->reveal()
+            fn (): UserInterface => $this->user
         );
-        $this->assertInstanceOf(UserRepositoryInterface::class, $htpasswd);
+
+        self::assertInstanceOf(UserRepositoryInterface::class, $htpasswd);
     }
 
     public function testAuthenticate(): void
     {
         $htpasswd = new Htpasswd(
             __DIR__ . '/../TestAssets/htpasswd',
-            fn() => $this->user->reveal()
+            fn (): UserInterface => $this->user
         );
 
         $user = $htpasswd->authenticate(self::EXAMPLE_IDENTITY, 'password');
-        $this->assertInstanceOf(UserInterface::class, $user);
-        $this->assertEquals(self::EXAMPLE_IDENTITY, $user->getIdentity());
+
+        self::assertSame($this->user, $user);
+        self::assertSame(self::EXAMPLE_IDENTITY, $user->getIdentity());
     }
 
     public function testAuthenticateInvalidUser(): void
     {
         $htpasswd = new Htpasswd(
             __DIR__ . '/../TestAssets/htpasswd',
-            fn() => $this->user->reveal()
+            fn (): UserInterface => $this->user
         );
-        $this->assertNull($htpasswd->authenticate(self::EXAMPLE_IDENTITY, 'foo'));
+
+        self::assertNull($htpasswd->authenticate(self::EXAMPLE_IDENTITY, 'foo'));
     }
 
     public function testAuthenticateWithoutPassword(): void
     {
         $htpasswd = new Htpasswd(
             __DIR__ . '/../TestAssets/htpasswd',
-            fn() => $this->user->reveal()
+            fn (): UserInterface => $this->user
         );
-        $this->assertNull($htpasswd->authenticate(self::EXAMPLE_IDENTITY, null));
+
+        self::assertNull($htpasswd->authenticate(self::EXAMPLE_IDENTITY, null));
     }
 
     public function testAuthenticateWithInsecureHash(): void
@@ -83,7 +91,7 @@ class HtpasswdTest extends TestCase
 
         $htpasswd = new Htpasswd(
             __DIR__ . '/../TestAssets/htpasswd_insecure',
-            fn() => $this->user->reveal()
+            fn (): UserInterface => $this->user
         );
         $htpasswd->authenticate(self::EXAMPLE_IDENTITY, 'password');
     }

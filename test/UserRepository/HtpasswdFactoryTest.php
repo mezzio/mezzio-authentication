@@ -12,22 +12,30 @@ use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepository\Htpasswd;
 use Mezzio\Authentication\UserRepository\HtpasswdFactory;
 use MezzioTest\Authentication\UserRepository\HtpasswdFactoryTest\ConfigImplementingArrayAccess;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 
-class HtpasswdFactoryTest extends TestCase
+/** @covers \Mezzio\Authentication\UserRepository\HtpasswdFactory */
+final class HtpasswdFactoryTest extends TestCase
 {
-    use ProphecyTrait;
+    /** @var ContainerInterface&MockObject */
+    private ContainerInterface $container;
 
-    /** @psalm-var ObjectProphecy<ContainerInterface> */
-    private $container;
-
-    /** @psalm-var ObjectProphecy<UserInterface> */
-    private $user;
+    /** @var UserInterface&MockObject */
+    private UserInterface $user;
 
     private HtpasswdFactory $factory;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->container = $this->createMock(ContainerInterface::class);
+        $this->user      = $this->createMock(UserInterface::class);
+
+        $this->factory = new HtpasswdFactory();
+    }
 
     /**
      * @psalm-return Generator<string,array{0:mixed,1:non-empty-string}>
@@ -57,48 +65,56 @@ class HtpasswdFactoryTest extends TestCase
         ];
     }
 
-    protected function setUp(): void
-    {
-        $this->container = $this->prophesize(ContainerInterface::class);
-        $this->user      = $this->prophesize(UserInterface::class);
-        $this->factory   = new HtpasswdFactory();
-    }
-
     public function testInvokeWithMissingConfig(): void
     {
         // We cannot throw a ContainerExceptionInterface directly; this
         // approach simply mimics `get()` throwing _any_ exception, which is
         // what will happen if `config` is not defined.
-        $this->container->get('config')->willThrow(new InvalidConfigException());
+        $this->container
+            ->expects(self::once())
+            ->method('get')
+            ->with('config')
+            ->willThrowException(new InvalidConfigException());
 
         $this->expectException(InvalidConfigException::class);
-        ($this->factory)($this->container->reveal());
+
+        ($this->factory)($this->container);
     }
 
     public function testInvokeWithEmptyConfig(): void
     {
-        $this->container->get('config')->willReturn([]);
-        $this->container->get(UserInterface::class)->willReturn(
-            fn() => $this->user->reveal()
-        );
+        $this->container
+            ->expects(self::once())
+            ->method('get')
+            ->with('config')
+            ->willReturn([]);
 
         $this->expectException(InvalidConfigException::class);
-        ($this->factory)($this->container->reveal());
+
+        ($this->factory)($this->container);
     }
 
     public function testInvokeWithInvalidConfig(): void
     {
-        $this->container->get('config')->willReturn([
-            'authentication' => [
-                'htpasswd' => 'foo',
-            ],
-        ]);
-        $this->container->get(UserInterface::class)->willReturn(
-            fn() => $this->user->reveal()
-        );
+        $this->container
+            ->expects(self::exactly(2))
+            ->method('get')
+            ->withConsecutive(
+                ['config'],
+                [UserInterface::class],
+            )
+            ->willReturn(
+                [
+                    'authentication' => [
+                        'htpasswd' => 'foo',
+                    ],
+                ],
+                fn (): UserInterface => $this->user
+            );
 
-        $this->expectException(InvalidConfigException::class);
-        ($this->factory)($this->container->reveal());
+                $this->expectException(InvalidConfigException::class);
+
+                ($this->factory)($this->container);
     }
 
     /**
@@ -108,15 +124,23 @@ class HtpasswdFactoryTest extends TestCase
      */
     public function testInvokeWithValidConfig($validConfig, string $filename): void
     {
-        $this->container->get('config')->willReturn($validConfig);
-        $this->container->get(UserInterface::class)->willReturn(
-            fn() => $this->user->reveal()
-        );
+        $this->container
+            ->expects(self::exactly(2))
+            ->method('get')
+            ->withConsecutive(
+                ['config'],
+                [UserInterface::class],
+            )
+            ->willReturn(
+                $validConfig,
+                fn (): UserInterface => $this->user
+            );
 
-        $htpasswd = ($this->factory)($this->container->reveal());
-        $this->assertEquals(new Htpasswd(
-            $filename,
-            fn() => $this->user->reveal()
-        ), $htpasswd);
+        $htpasswd = ($this->factory)($this->container);
+
+        self::assertEquals(
+            new Htpasswd($filename, fn (): UserInterface => $this->user),
+            $htpasswd
+        );
     }
 }
