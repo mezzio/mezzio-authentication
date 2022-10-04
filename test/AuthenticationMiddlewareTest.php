@@ -7,79 +7,88 @@ namespace MezzioTest\Authentication;
 use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\AuthenticationMiddleware;
 use Mezzio\Authentication\UserInterface;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class AuthenticationMiddlewareTest extends TestCase
+/** @covers \Mezzio\Authentication\AuthenticationMiddleware */
+final class AuthenticationMiddlewareTest extends TestCase
 {
-    use ProphecyTrait;
+    /** @var AuthenticationInterface&MockObject */
+    private AuthenticationInterface $authentication;
 
-    /** @psalm-var ObjectProphecy<AuthenticationInterface> */
-    private $authentication;
+    /** @var ServerRequestInterface&MockObject */
+    private ServerRequestInterface $request;
 
-    /** @psalm-var ObjectProphecy<ServerRequestInterface> */
-    private $request;
+    /** @var UserInterface&MockObject */
+    private UserInterface $authenticatedUser;
 
-    /** @psalm-var ObjectProphecy<UserInterface> */
-    private $authenticatedUser;
+    /** @var RequestHandlerInterface&MockObject */
+    private RequestHandlerInterface $handler;
 
-    /** @psalm-var ObjectProphecy<RequestHandlerInterface> */
-    private $handler;
+    private AuthenticationMiddleware $middleware;
 
     protected function setUp(): void
     {
-        $this->authentication    = $this->prophesize(AuthenticationInterface::class);
-        $this->request           = $this->prophesize(ServerRequestInterface::class);
-        $this->authenticatedUser = $this->prophesize(UserInterface::class);
-        $this->handler           = $this->prophesize(RequestHandlerInterface::class);
+        parent::setUp();
+
+        $this->authentication    = $this->createMock(AuthenticationInterface::class);
+        $this->request           = $this->createMock(ServerRequestInterface::class);
+        $this->authenticatedUser = $this->createMock(UserInterface::class);
+        $this->handler           = $this->createMock(RequestHandlerInterface::class);
+
+        $this->middleware = new AuthenticationMiddleware($this->authentication);
     }
 
     public function testConstructor(): void
     {
-        $middleware = new AuthenticationMiddleware($this->authentication->reveal());
-        $this->assertInstanceOf(MiddlewareInterface::class, $middleware);
+        self::assertInstanceOf(MiddlewareInterface::class, $this->middleware);
     }
 
     public function testProcessWithNoAuthenticatedUser(): void
     {
-        $response = $this->prophesize(ResponseInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
 
-        $this->authentication->authenticate($this->request->reveal())
-                             ->willReturn(null);
-        $this->authentication->unauthorizedResponse($this->request->reveal())
-                             ->willReturn($response->reveal());
+        $this->authentication
+            ->expects(self::once())
+            ->method('authenticate')
+            ->with($this->request)
+            ->willReturn(null);
 
-        $middleware = new AuthenticationMiddleware($this->authentication->reveal());
-        $result     = $middleware->process($this->request->reveal(), $this->handler->reveal());
+        $this->authentication
+            ->expects(self::once())
+            ->method('unauthorizedResponse')
+            ->with($this->request)
+            ->willReturn($response);
 
-        $this->assertEquals($response->reveal(), $result);
-        $this->authentication->unauthorizedResponse($this->request->reveal())->shouldBeCalled();
+        self::assertSame($response, $this->middleware->process($this->request, $this->handler));
     }
 
     public function testProcessWithAuthenticatedUser(): void
     {
-        $response = $this->prophesize(ResponseInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
 
         $this->request
-            ->withAttribute(UserInterface::class, $this->authenticatedUser->reveal())
-            ->willReturn($this->request->reveal());
+            ->expects(self::once())
+            ->method('withAttribute')
+            ->with(UserInterface::class, $this->authenticatedUser)
+            ->willReturn($this->request);
 
         $this->authentication
-            ->authenticate($this->request->reveal())
-            ->willReturn($this->authenticatedUser->reveal());
+            ->expects(self::once())
+            ->method('authenticate')
+            ->with($this->request)
+            ->willReturn($this->authenticatedUser);
+
         $this->handler
-            ->handle($this->request->reveal())
-            ->willReturn($response->reveal());
+            ->expects(self::once())
+            ->method('handle')
+            ->with($this->request)
+            ->willReturn($response);
 
-        $middleware = new AuthenticationMiddleware($this->authentication->reveal());
-        $result     = $middleware->process($this->request->reveal(), $this->handler->reveal());
-
-        $this->assertEquals($response->reveal(), $result);
-        $this->handler->handle($this->request->reveal())->shouldBeCalled();
+        self::assertSame($response, $this->middleware->process($this->request, $this->handler));
     }
 }

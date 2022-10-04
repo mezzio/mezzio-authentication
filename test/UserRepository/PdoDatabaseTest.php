@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MezzioTest\Authentication\UserRepository;
 
+use Closure;
 use Mezzio\Authentication\DefaultUser;
 use Mezzio\Authentication\Exception\InvalidConfigException;
 use Mezzio\Authentication\Exception\RuntimeException;
@@ -13,19 +14,18 @@ use Mezzio\Authentication\UserRepositoryInterface;
 use PDO;
 use PDOStatement;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
 use Webmozart\Assert\Assert;
 
-class PdoDatabaseTest extends TestCase
+/** @covers \Mezzio\Authentication\UserRepository\PdoDatabase */
+final class PdoDatabaseTest extends TestCase
 {
-    use ProphecyTrait;
-
-    /** @psalm-var callable(string, array<int|string, string>, array<string, mixed>): UserInterface */
-    private $userFactory;
+    /** @psalm-var Closure(string, array<int|string, string>, array<string, mixed>): UserInterface */
+    private Closure $userFactory;
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this->userFactory = static function (string $identity, array $roles, array $details): UserInterface {
             Assert::allString($roles);
             Assert::isMap($details);
@@ -41,7 +41,8 @@ class PdoDatabaseTest extends TestCase
             [],
             $this->userFactory
         );
-        $this->assertInstanceOf(UserRepositoryInterface::class, $pdoDatabase);
+
+        self::assertInstanceOf(UserRepositoryInterface::class, $pdoDatabase);
     }
 
     /**
@@ -68,8 +69,9 @@ class PdoDatabaseTest extends TestCase
         );
 
         $user = $pdoDatabase->authenticate('test', 'password');
-        $this->assertInstanceOf(UserInterface::class, $user);
-        $this->assertEquals('test', $user->getIdentity());
+
+        self::assertInstanceOf(UserInterface::class, $user);
+        self::assertSame('test', $user->getIdentity());
     }
 
     public function testAuthenticationError(): void
@@ -88,6 +90,7 @@ class PdoDatabaseTest extends TestCase
         );
 
         $this->expectException(RuntimeException::class);
+
         $pdoDatabase->authenticate('test', 'password');
     }
 
@@ -101,7 +104,8 @@ class PdoDatabaseTest extends TestCase
         );
 
         $user = $pdoDatabase->authenticate('test', 'foo');
-        $this->assertNull($user);
+
+        self::assertNull($user);
     }
 
     public function testAuthenticateInvalidUsername(): void
@@ -114,7 +118,8 @@ class PdoDatabaseTest extends TestCase
         );
 
         $user = $pdoDatabase->authenticate('invalidusername', 'password');
-        $this->assertNull($user);
+
+        self::assertNull($user);
     }
 
     public function testAuthenticateWithRole(): void
@@ -130,8 +135,9 @@ class PdoDatabaseTest extends TestCase
         );
 
         $user = $pdoDatabase->authenticate('test', 'password');
-        $this->assertInstanceOf(UserInterface::class, $user);
-        $this->assertEquals(['admin'], $user->getRoles());
+
+        self::assertInstanceOf(UserInterface::class, $user);
+        self::assertSame(['admin'], $user->getRoles());
     }
 
     public function testAuthenticateWithRoles(): void
@@ -146,8 +152,9 @@ class PdoDatabaseTest extends TestCase
             $this->userFactory
         );
         $user        = $pdoDatabase->authenticate('test', 'password');
-        $this->assertInstanceOf(UserInterface::class, $user);
-        $this->assertEquals(['user', 'admin'], $user->getRoles());
+
+        self::assertInstanceOf(UserInterface::class, $user);
+        self::assertSame(['user', 'admin'], $user->getRoles());
     }
 
     public function testAuthenticateWithDetails(): void
@@ -163,9 +170,10 @@ class PdoDatabaseTest extends TestCase
         );
 
         $user = $pdoDatabase->authenticate('test', 'password');
-        $this->assertInstanceOf(UserInterface::class, $user);
-        $this->assertEquals(['email' => 'test@foo.com'], $user->getDetails());
-        $this->assertEquals('test@foo.com', $user->getDetail('email'));
+
+        self::assertInstanceOf(UserInterface::class, $user);
+        self::assertSame(['email' => 'test@foo.com'], $user->getDetails());
+        self::assertSame('test@foo.com', $user->getDetail('email'));
     }
 
     public function testAuthenticateWithRolesAndDetails(): void
@@ -182,10 +190,11 @@ class PdoDatabaseTest extends TestCase
         );
 
         $user = $pdoDatabase->authenticate('test', 'password');
-        $this->assertInstanceOf(UserInterface::class, $user);
-        $this->assertEquals(['email' => 'test@foo.com'], $user->getDetails());
-        $this->assertEquals('test@foo.com', $user->getDetail('email'));
-        $this->assertEquals(['user', 'admin'], $user->getRoles());
+
+        self::assertInstanceOf(UserInterface::class, $user);
+        self::assertSame(['email' => 'test@foo.com'], $user->getDetails());
+        self::assertSame('test@foo.com', $user->getDetail('email'));
+        self::assertSame(['user', 'admin'], $user->getRoles());
     }
 
     public function testAuthenticateWithRoleRuntimeError(): void
@@ -201,6 +210,7 @@ class PdoDatabaseTest extends TestCase
         );
 
         $this->expectException(RuntimeException::class);
+
         $pdoDatabase->authenticate('test', 'password');
     }
 
@@ -215,8 +225,9 @@ class PdoDatabaseTest extends TestCase
             $this->userFactory
         );
         $user        = $pdoDatabase->authenticate('test', 'password');
-        $this->assertInstanceOf(UserInterface::class, $user);
-        $this->assertEquals('test', $user->getIdentity());
+
+        self::assertInstanceOf(UserInterface::class, $user);
+        self::assertSame('test', $user->getIdentity());
     }
 
     public function testAuthenticateWithNoIdentityParam(): void
@@ -232,6 +243,7 @@ class PdoDatabaseTest extends TestCase
         );
 
         $this->expectException(InvalidConfigException::class);
+
         $pdoDatabase->authenticate('test', 'password');
     }
 
@@ -251,21 +263,41 @@ class PdoDatabaseTest extends TestCase
      */
     public function testHandlesNullOrEmptyPassword(?string $password): void
     {
-        $stmt = $this->prophesize(PDOStatement::class);
-        $stmt->bindParam(Argument::any(), Argument::any())->willReturn(true);
-        $stmt->execute(Argument::any())->willReturn(true);
-        $stmt->fetchObject()->willReturn((object) ['password' => $password]);
+        $stmt = $this->createMock(PDOStatement::class);
 
-        $pdo = $this->prophesize(PDO::class);
-        $pdo->prepare(Argument::any())->willReturn($stmt->reveal());
+        $stmt
+            ->expects(self::once())
+            ->method('bindParam')
+            ->withAnyParameters()
+            ->willReturn(true);
+
+        $stmt
+            ->expects(self::once())
+            ->method('execute')
+            ->withAnyParameters()
+            ->willReturn(true);
+
+        $stmt
+            ->expects(self::once())
+            ->method('fetchObject')
+            ->willReturn((object) ['password' => $password]);
+
+        $pdo = $this->createMock(PDO::class);
+
+        $pdo
+            ->expects(self::once())
+            ->method('prepare')
+            ->withAnyParameters()
+            ->willReturn($stmt);
 
         $pdoDatabase = new PdoDatabase(
-            $pdo->reveal(),
+            $pdo,
             $this->getConfig(),
             $this->userFactory
         );
 
         $user = $pdoDatabase->authenticate('null', $password);
-        $this->assertNull($user);
+
+        self::assertNull($user);
     }
 }

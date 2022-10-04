@@ -9,34 +9,35 @@ use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepository\PdoDatabase;
 use Mezzio\Authentication\UserRepository\PdoDatabaseFactory;
 use PDO;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
 use Psr\Container\ContainerInterface;
 
 use function array_key_exists;
 
-class PdoDatabaseFactoryTest extends TestCase
+/** @covers \Mezzio\Authentication\UserRepository\PdoDatabaseFactory */
+final class PdoDatabaseFactoryTest extends TestCase
 {
-    use ProphecyTrait;
+    /** @var ContainerInterface&MockObject */
+    private ContainerInterface $container;
 
-    /** @psalm-var ObjectProphecy<ContainerInterface> */
-    private $container;
+    /** @var UserInterface&MockObject */
+    private UserInterface $user;
 
-    /** @psalm-var ObjectProphecy<UserInterface> */
-    private $user;
-
-    /** @psalm-var ObjectProphecy<PDO> */
-    private $pdo;
+    /** @var PDO&MockObject */
+    private PDO $pdo;
 
     private PdoDatabaseFactory $factory;
 
     protected function setUp(): void
     {
-        $this->container = $this->prophesize(ContainerInterface::class);
-        $this->user      = $this->prophesize(UserInterface::class);
-        $this->pdo       = $this->prophesize(PDO::class);
-        $this->factory   = new PdoDatabaseFactory();
+        parent::setUp();
+
+        $this->container = $this->createMock(ContainerInterface::class);
+        $this->user      = $this->createMock(UserInterface::class);
+        $this->pdo       = $this->createMock(PDO::class);
+
+        $this->factory = new PdoDatabaseFactory();
     }
 
     public function testInvokeWithMissingConfig(): void
@@ -44,20 +45,29 @@ class PdoDatabaseFactoryTest extends TestCase
         // We cannot throw a ContainerExceptionInterface directly; this
         // approach simply mimics `get()` throwing _any_ exception, which is
         // what will happen if `config` is not defined.
-        $this->container->get('config')->willThrow(new InvalidConfigException());
+        $this->container
+            ->expects(self::once())
+            ->method('get')
+            ->with('config')
+            ->willThrowException(new InvalidConfigException());
 
         $this->expectException(InvalidConfigException::class);
-        ($this->factory)($this->container->reveal());
+
+        ($this->factory)($this->container);
     }
 
     public function testInvokeWithEmptyConfig(): void
     {
-        $this->container->get('config')->willReturn([]);
+        $this->container
+            ->expects(self::once())
+            ->method('get')
+            ->with('config')
+            ->willReturn([]);
 
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('PDO values are missing in authentication config');
 
-        ($this->factory)($this->container->reveal());
+        ($this->factory)($this->container);
     }
 
     /**
@@ -132,19 +142,25 @@ class PdoDatabaseFactoryTest extends TestCase
     {
         $this->expectException(InvalidConfigException::class);
 
-        $this->pdo->getAttribute(PDO::ATTR_ERRMODE)->willReturn(PDO::ERRMODE_SILENT);
+        $this->pdo
+            ->expects(self::never())
+            ->method('setAttribute')
+            ->with(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
-        $this->container->get('config')->willReturn([
-            'authentication' => ['pdo' => $pdoConfig],
-        ]);
-        $this->container->has(PDO::class)->willReturn(true);
-        $this->container->get(PDO::class)->willReturn($this->pdo->reveal());
-        $this->container->get(UserInterface::class)->willReturn(
-            fn() => $this->user->reveal()
-        );
+        $this->container
+            ->expects(self::never())
+            ->method('has')
+            ->with(PDO::class);
+
+        $this->container
+            ->expects(self::once())
+            ->method('get')
+            ->with('config')
+            ->willReturn(['authentication' => ['pdo' => $pdoConfig]]);
 
         $this->expectException(InvalidConfigException::class);
-        ($this->factory)($this->container->reveal());
+
+        ($this->factory)($this->container);
     }
 
     /**
@@ -182,21 +198,37 @@ class PdoDatabaseFactoryTest extends TestCase
      */
     public function testInvokeWithValidConfig(array $pdoConfig): void
     {
-        $this->pdo->getAttribute(PDO::ATTR_ERRMODE)->willReturn(PDO::ERRMODE_SILENT);
+        $this->pdo
+            ->expects(self::never())
+            ->method('setAttribute')
+            ->with(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
-        $this->container->get('config')->willReturn([
-            'authentication' => ['pdo' => $pdoConfig],
-        ]);
-        $this->container->has(PDO::class)->willReturn(true);
-        $this->container->get(PDO::class)->willReturn($this->pdo->reveal());
-        $this->container->get(UserInterface::class)->willReturn(
-            fn() => $this->user->reveal()
-        );
-        $pdoDatabase = ($this->factory)($this->container->reveal());
-        $this->assertEquals(new PdoDatabase(
-            array_key_exists('dsn', $pdoConfig) ? new PDO((string) $pdoConfig['dsn']) : $this->pdo->reveal(),
+        $this->container
+            ->expects(array_key_exists('dsn', $pdoConfig) ? self::never() : self::once())
+            ->method('has')
+            ->with(PDO::class)
+            ->willReturn(true);
+
+        $this->container
+            ->expects(self::exactly(array_key_exists('dsn', $pdoConfig) ? 2 : 3))
+            ->method('get')
+            ->withConsecutive(
+                ['config'],
+                [UserInterface::class],
+                [PDO::class],
+            )
+            ->willReturn(
+                ['authentication' => ['pdo' => $pdoConfig]],
+                fn (): UserInterface => $this->user,
+                $this->pdo,
+            );
+
+        $pdoDatabase = ($this->factory)($this->container);
+
+        self::assertEquals(new PdoDatabase(
+            array_key_exists('dsn', $pdoConfig) ? new PDO((string) $pdoConfig['dsn']) : $this->pdo,
             $pdoConfig,
-            fn() => $this->user->reveal()
+            fn (): UserInterface => $this->user
         ), $pdoDatabase);
     }
 }
