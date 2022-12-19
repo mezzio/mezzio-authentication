@@ -248,7 +248,7 @@ final class PdoDatabaseTest extends TestCase
     }
 
     /**
-     * @psalm-return list<list<string|null>>
+     * @psalm-return list<array{0: string|null}>
      */
     public function getVoidPasswords(): array
     {

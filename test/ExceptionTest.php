@@ -16,11 +16,10 @@ use function substr;
 final class ExceptionTest extends TestCase
 {
     /**
-     * @psalm-return iterable<string, list<string>>
+     * @psalm-return iterable<string, array{0: string}>
      */
     public function exception(): iterable
     {
-        /** @psalm-suppress InvalidLiteralArgument */
         $namespace = substr(ExceptionInterface::class, 0, (int) strrpos(ExceptionInterface::class, '\\') + 1);
 
         $exceptions = glob(__DIR__ . '/../src/Exception/*.php');
