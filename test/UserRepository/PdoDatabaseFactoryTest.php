@@ -71,7 +71,7 @@ final class PdoDatabaseFactoryTest extends TestCase
     }
 
     /**
-     * @psalm-return list<list<array<string, array<string, string>|string>>>
+     * @psalm-return list<array{0: array<string, array<string, string>|string>}>
      */
     public function getPdoInvalidConfig(): array
     {
@@ -164,7 +164,7 @@ final class PdoDatabaseFactoryTest extends TestCase
     }
 
     /**
-     * @psalm-return list<list<array<string, mixed>>>
+     * @psalm-return list<array{0: array<string, mixed>}>
      */
     public function getPdoValidConfig(): array
     {
