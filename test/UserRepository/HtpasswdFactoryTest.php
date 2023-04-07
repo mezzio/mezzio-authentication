@@ -11,16 +11,16 @@ use Mezzio\Authentication\Exception\InvalidConfigException;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepository\Htpasswd;
 use Mezzio\Authentication\UserRepository\HtpasswdFactory;
+use MezzioTest\Authentication\InMemoryContainer;
 use MezzioTest\Authentication\UserRepository\HtpasswdFactoryTest\ConfigImplementingArrayAccess;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
+use Psr\Container\ContainerExceptionInterface;
 
 /** @covers \Mezzio\Authentication\UserRepository\HtpasswdFactory */
 final class HtpasswdFactoryTest extends TestCase
 {
-    /** @var ContainerInterface&MockObject */
-    private ContainerInterface $container;
+    private InMemoryContainer $container;
 
     /** @var UserInterface&MockObject */
     private UserInterface $user;
@@ -31,7 +31,7 @@ final class HtpasswdFactoryTest extends TestCase
     {
         parent::setUp();
 
-        $this->container = $this->createMock(ContainerInterface::class);
+        $this->container = new InMemoryContainer();
         $this->user      = $this->createMock(UserInterface::class);
 
         $this->factory = new HtpasswdFactory();
@@ -67,27 +67,14 @@ final class HtpasswdFactoryTest extends TestCase
 
     public function testInvokeWithMissingConfig(): void
     {
-        // We cannot throw a ContainerExceptionInterface directly; this
-        // approach simply mimics `get()` throwing _any_ exception, which is
-        // what will happen if `config` is not defined.
-        $this->container
-            ->expects(self::once())
-            ->method('get')
-            ->with('config')
-            ->willThrowException(new InvalidConfigException());
-
-        $this->expectException(InvalidConfigException::class);
+        $this->expectException(ContainerExceptionInterface::class);
 
         ($this->factory)($this->container);
     }
 
     public function testInvokeWithEmptyConfig(): void
     {
-        $this->container
-            ->expects(self::once())
-            ->method('get')
-            ->with('config')
-            ->willReturn([]);
+        $this->container->set('config', []);
 
         $this->expectException(InvalidConfigException::class);
 
@@ -96,25 +83,16 @@ final class HtpasswdFactoryTest extends TestCase
 
     public function testInvokeWithInvalidConfig(): void
     {
-        $this->container
-            ->expects(self::exactly(2))
-            ->method('get')
-            ->withConsecutive(
-                ['config'],
-                [UserInterface::class],
-            )
-            ->willReturn(
-                [
-                    'authentication' => [
-                        'htpasswd' => 'foo',
-                    ],
-                ],
-                fn (): UserInterface => $this->user
-            );
+        $this->container->set('config', [
+            'authentication' => [
+                'htpasswd' => 'foo',
+            ],
+        ]);
+        $this->container->set(UserInterface::class, fn (): UserInterface => $this->user);
 
-                $this->expectException(InvalidConfigException::class);
+        $this->expectException(InvalidConfigException::class);
 
-                ($this->factory)($this->container);
+        ($this->factory)($this->container);
     }
 
     /**
@@ -124,18 +102,8 @@ final class HtpasswdFactoryTest extends TestCase
      */
     public function testInvokeWithValidConfig($validConfig, string $filename): void
     {
-        $this->container
-            ->expects(self::exactly(2))
-            ->method('get')
-            ->withConsecutive(
-                ['config'],
-                [UserInterface::class],
-            )
-            ->willReturn(
-                $validConfig,
-                fn (): UserInterface => $this->user
-            );
-
+        $this->container->set('config', $validConfig);
+        $this->container->set(UserInterface::class, fn (): UserInterface => $this->user);
         $htpasswd = ($this->factory)($this->container);
 
         self::assertEquals(
