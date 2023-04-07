@@ -9,10 +9,11 @@ use Mezzio\Authentication\Exception\RuntimeException;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepository\Htpasswd;
 use Mezzio\Authentication\UserRepositoryInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
-/** @covers \Mezzio\Authentication\UserRepository\Htpasswd */
+#[CoversClass(Htpasswd::class)]
 final class HtpasswdTest extends TestCase
 {
     private const EXAMPLE_IDENTITY = 'test';

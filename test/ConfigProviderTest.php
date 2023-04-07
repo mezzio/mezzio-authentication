@@ -10,9 +10,10 @@ use Mezzio\Authentication\ConfigProvider;
 use Mezzio\Authentication\DefaultUserFactory;
 use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepository;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/** @covers \Mezzio\Authentication\ConfigProvider */
+#[CoversClass(ConfigProvider::class)]
 final class ConfigProviderTest extends TestCase
 {
     private ConfigProvider $provider;

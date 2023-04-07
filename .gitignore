@@ -1,8 +1,7 @@
-/clover.xml
 /.phpcs-cache
 /docs/html/
 /laminas-mkdoc-theme.tgz
 /laminas-mkdoc-theme/
-/.phpunit.result.cache
+/.phpunit.cache
 /phpunit.xml
 /vendor/

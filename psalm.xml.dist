@@ -16,6 +16,17 @@
         </ignoreFiles>
     </projectFiles>
 
+    <issueHandlers>
+        <!--
+        The PHPUnit Plugin cannot detect data providers referenced by PHP Attributes
+        -->
+        <PossiblyUnusedMethod>
+            <errorLevel type="suppress">
+                <directory name="test" />
+            </errorLevel>
+        </PossiblyUnusedMethod>
+    </issueHandlers>
+
     <plugins>
         <pluginClass class="Psalm\PhpUnitPlugin\Plugin"/>
     </plugins>

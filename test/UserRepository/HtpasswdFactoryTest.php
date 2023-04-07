@@ -13,11 +13,13 @@ use Mezzio\Authentication\UserRepository\Htpasswd;
 use Mezzio\Authentication\UserRepository\HtpasswdFactory;
 use MezzioTest\Authentication\InMemoryContainer;
 use MezzioTest\Authentication\UserRepository\HtpasswdFactoryTest\ConfigImplementingArrayAccess;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
 
-/** @covers \Mezzio\Authentication\UserRepository\HtpasswdFactory */
+#[CoversClass(HtpasswdFactory::class)]
 final class HtpasswdFactoryTest extends TestCase
 {
     private InMemoryContainer $container;
@@ -40,7 +42,7 @@ final class HtpasswdFactoryTest extends TestCase
     /**
      * @psalm-return Generator<string,array{0:mixed,1:non-empty-string}>
      */
-    public function validConfigs(): Generator
+    public static function validConfigs(): Generator
     {
         $filename = __DIR__ . '/../TestAssets/htpasswd';
         $config   = [
@@ -98,8 +100,8 @@ final class HtpasswdFactoryTest extends TestCase
     /**
      * @psalm-param mixed $validConfig
      * @psalm-param non-empty-string $filename
-     * @dataProvider validConfigs
      */
+    #[DataProvider('validConfigs')]
     public function testInvokeWithValidConfig($validConfig, string $filename): void
     {
         $this->container->set('config', $validConfig);

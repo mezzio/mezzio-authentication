@@ -10,6 +10,8 @@ use Mezzio\Authentication\UserInterface;
 use Mezzio\Authentication\UserRepository\PdoDatabaseFactory;
 use MezzioTest\Authentication\InMemoryContainer;
 use PDO;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
@@ -17,7 +19,7 @@ use ReflectionProperty;
 
 use function assert;
 
-/** @covers \Mezzio\Authentication\UserRepository\PdoDatabaseFactory */
+#[CoversClass(PdoDatabaseFactory::class)]
 final class PdoDatabaseFactoryTest extends TestCase
 {
     private InMemoryContainer $container;
@@ -67,7 +69,7 @@ final class PdoDatabaseFactoryTest extends TestCase
     /**
      * @psalm-return list<array{0: array<string, array<string, string>|string>}>
      */
-    public function getPdoInvalidConfig(): array
+    public static function getPdoInvalidConfig(): array
     {
         return [
             [[]],
@@ -140,8 +142,8 @@ final class PdoDatabaseFactoryTest extends TestCase
 
     /**
      * @param array<string,mixed> $pdoConfig
-     * @dataProvider getPdoInvalidConfig
      */
+    #[DataProvider('getPdoInvalidConfig')]
     public function testInvokeWithInvalidConfig(array $pdoConfig): void
     {
         $this->expectException(InvalidConfigException::class);
@@ -162,7 +164,7 @@ final class PdoDatabaseFactoryTest extends TestCase
     /**
      * @psalm-return list<array{0: array<string, mixed>}>
      */
-    public function getPdoValidConfig(): array
+    public static function getPdoValidConfig(): array
     {
         return [
             [
@@ -189,9 +191,9 @@ final class PdoDatabaseFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider getPdoValidConfig
      * @psalm-param array<string, mixed> $pdoConfig
      */
+    #[DataProvider('getPdoValidConfig')]
     public function testInvokeWithValidConfig(array $pdoConfig): void
     {
         $this->pdo

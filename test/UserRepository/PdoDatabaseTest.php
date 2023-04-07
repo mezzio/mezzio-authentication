@@ -13,10 +13,12 @@ use Mezzio\Authentication\UserRepository\PdoDatabase;
 use Mezzio\Authentication\UserRepositoryInterface;
 use PDO;
 use PDOStatement;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Webmozart\Assert\Assert;
 
-/** @covers \Mezzio\Authentication\UserRepository\PdoDatabase */
+#[CoversClass(PdoDatabase::class)]
 final class PdoDatabaseTest extends TestCase
 {
     /** @psalm-var Closure(string, array<int|string, string>, array<string, mixed>): UserInterface */
@@ -250,7 +252,7 @@ final class PdoDatabaseTest extends TestCase
     /**
      * @psalm-return list<array{0: string|null}>
      */
-    public function getVoidPasswords(): array
+    public static function getVoidPasswords(): array
     {
         return [
             [null],
@@ -258,9 +260,7 @@ final class PdoDatabaseTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getVoidPasswords
-     */
+    #[DataProvider('getVoidPasswords')]
     public function testHandlesNullOrEmptyPassword(?string $password): void
     {
         $stmt = $this->createMock(PDOStatement::class);

@@ -4,14 +4,19 @@
     xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
     bootstrap="vendor/autoload.php"
     colors="true"
-    convertDeprecationsToExceptions="true"
-    verbose="true">
-    <coverage processUncoveredFiles="true">
+    cacheDirectory=".phpunit.cache"
+    displayDetailsOnIncompleteTests="true"
+    displayDetailsOnSkippedTests="true"
+    displayDetailsOnTestsThatTriggerDeprecations="true"
+    displayDetailsOnTestsThatTriggerErrors="true"
+    displayDetailsOnTestsThatTriggerNotices="true"
+    displayDetailsOnTestsThatTriggerWarnings="true"
+>
+    <coverage>
         <include>
             <directory suffix=".php">src</directory>
         </include>
     </coverage>
-
     <testsuites>
         <testsuite name="mezzio-authentication">
             <directory>./test</directory>

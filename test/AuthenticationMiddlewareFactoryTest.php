@@ -8,11 +8,12 @@ use Mezzio\Authentication\AuthenticationInterface;
 use Mezzio\Authentication\AuthenticationMiddleware;
 use Mezzio\Authentication\AuthenticationMiddlewareFactory;
 use Mezzio\Authentication\Exception\InvalidConfigException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-/** @covers \Mezzio\Authentication\AuthenticationMiddlewareFactory */
+#[CoversClass(AuthenticationMiddlewareFactory::class)]
 final class AuthenticationMiddlewareFactoryTest extends TestCase
 {
     /** @var ContainerInterface&MockObject */
