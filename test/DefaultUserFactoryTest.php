@@ -6,11 +6,12 @@ namespace MezzioTest\Authentication;
 
 use Mezzio\Authentication\DefaultUser;
 use Mezzio\Authentication\DefaultUserFactory;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 
-/** @covers \Mezzio\Authentication\DefaultUserFactory */
+#[CoversClass(DefaultUserFactory::class)]
 final class DefaultUserFactoryTest extends TestCase
 {
     /** @var ContainerInterface&MockObject */

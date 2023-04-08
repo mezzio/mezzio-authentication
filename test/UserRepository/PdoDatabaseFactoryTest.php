@@ -4,25 +4,28 @@ declare(strict_types=1);
 
 namespace MezzioTest\Authentication\UserRepository;
 
+use Closure;
 use Mezzio\Authentication\Exception\InvalidConfigException;
 use Mezzio\Authentication\UserInterface;
-use Mezzio\Authentication\UserRepository\PdoDatabase;
 use Mezzio\Authentication\UserRepository\PdoDatabaseFactory;
+use MezzioTest\Authentication\InMemoryContainer;
 use PDO;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Psr\Container\ContainerInterface;
+use Psr\Container\ContainerExceptionInterface;
+use ReflectionProperty;
 
-use function array_key_exists;
+use function assert;
 
-/** @covers \Mezzio\Authentication\UserRepository\PdoDatabaseFactory */
+#[CoversClass(PdoDatabaseFactory::class)]
 final class PdoDatabaseFactoryTest extends TestCase
 {
-    /** @var ContainerInterface&MockObject */
-    private ContainerInterface $container;
+    private InMemoryContainer $container;
 
-    /** @var UserInterface&MockObject */
-    private UserInterface $user;
+    /** @var Closure(): UserInterface */
+    private Closure $user;
 
     /** @var PDO&MockObject */
     private PDO $pdo;
@@ -33,36 +36,29 @@ final class PdoDatabaseFactoryTest extends TestCase
     {
         parent::setUp();
 
-        $this->container = $this->createMock(ContainerInterface::class);
-        $this->user      = $this->createMock(UserInterface::class);
-        $this->pdo       = $this->createMock(PDO::class);
+        $this->container = new InMemoryContainer();
+        $user            = $this->createMock(UserInterface::class);
+        $this->user      = static function () use ($user): UserInterface {
+            assert($user instanceof UserInterface);
+
+            return $user;
+        };
+
+        $this->pdo = $this->createMock(PDO::class);
 
         $this->factory = new PdoDatabaseFactory();
     }
 
     public function testInvokeWithMissingConfig(): void
     {
-        // We cannot throw a ContainerExceptionInterface directly; this
-        // approach simply mimics `get()` throwing _any_ exception, which is
-        // what will happen if `config` is not defined.
-        $this->container
-            ->expects(self::once())
-            ->method('get')
-            ->with('config')
-            ->willThrowException(new InvalidConfigException());
-
-        $this->expectException(InvalidConfigException::class);
+        $this->expectException(ContainerExceptionInterface::class);
 
         ($this->factory)($this->container);
     }
 
     public function testInvokeWithEmptyConfig(): void
     {
-        $this->container
-            ->expects(self::once())
-            ->method('get')
-            ->with('config')
-            ->willReturn([]);
+        $this->container->set('config', []);
 
         $this->expectException(InvalidConfigException::class);
         $this->expectExceptionMessage('PDO values are missing in authentication config');
@@ -73,7 +69,7 @@ final class PdoDatabaseFactoryTest extends TestCase
     /**
      * @psalm-return list<array{0: array<string, array<string, string>|string>}>
      */
-    public function getPdoInvalidConfig(): array
+    public static function getPdoInvalidConfig(): array
     {
         return [
             [[]],
@@ -131,13 +127,23 @@ final class PdoDatabaseFactoryTest extends TestCase
                     ],
                 ],
             ],
+            [
+                [
+                    'service' => 'No service by this name',
+                    'table'   => 'test',
+                    'field'   => [
+                        'identity' => 'email',
+                        'password' => 'password',
+                    ],
+                ],
+            ],
         ];
     }
 
     /**
      * @param array<string,mixed> $pdoConfig
-     * @dataProvider getPdoInvalidConfig
      */
+    #[DataProvider('getPdoInvalidConfig')]
     public function testInvokeWithInvalidConfig(array $pdoConfig): void
     {
         $this->expectException(InvalidConfigException::class);
@@ -147,16 +153,8 @@ final class PdoDatabaseFactoryTest extends TestCase
             ->method('setAttribute')
             ->with(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
-        $this->container
-            ->expects(self::never())
-            ->method('has')
-            ->with(PDO::class);
-
-        $this->container
-            ->expects(self::once())
-            ->method('get')
-            ->with('config')
-            ->willReturn(['authentication' => ['pdo' => $pdoConfig]]);
+        $this->container->set('config', ['authentication' => ['pdo' => $pdoConfig]]);
+        $this->container->set(UserInterface::class, $this->user);
 
         $this->expectException(InvalidConfigException::class);
 
@@ -166,7 +164,7 @@ final class PdoDatabaseFactoryTest extends TestCase
     /**
      * @psalm-return list<array{0: array<string, mixed>}>
      */
-    public function getPdoValidConfig(): array
+    public static function getPdoValidConfig(): array
     {
         return [
             [
@@ -193,9 +191,9 @@ final class PdoDatabaseFactoryTest extends TestCase
     }
 
     /**
-     * @dataProvider getPdoValidConfig
      * @psalm-param array<string, mixed> $pdoConfig
      */
+    #[DataProvider('getPdoValidConfig')]
     public function testInvokeWithValidConfig(array $pdoConfig): void
     {
         $this->pdo
@@ -203,32 +201,18 @@ final class PdoDatabaseFactoryTest extends TestCase
             ->method('setAttribute')
             ->with(PDO::ATTR_ERRMODE, PDO::ERRMODE_SILENT);
 
-        $this->container
-            ->expects(array_key_exists('dsn', $pdoConfig) ? self::never() : self::once())
-            ->method('has')
-            ->with(PDO::class)
-            ->willReturn(true);
-
-        $this->container
-            ->expects(self::exactly(array_key_exists('dsn', $pdoConfig) ? 2 : 3))
-            ->method('get')
-            ->withConsecutive(
-                ['config'],
-                [UserInterface::class],
-                [PDO::class],
-            )
-            ->willReturn(
-                ['authentication' => ['pdo' => $pdoConfig]],
-                fn (): UserInterface => $this->user,
-                $this->pdo,
-            );
+        $this->container->set('config', ['authentication' => ['pdo' => $pdoConfig]]);
+        $this->container->set(UserInterface::class, $this->user);
+        $this->container->set(PDO::class, $this->pdo);
 
         $pdoDatabase = ($this->factory)($this->container);
 
-        self::assertEquals(new PdoDatabase(
-            array_key_exists('dsn', $pdoConfig) ? new PDO((string) $pdoConfig['dsn']) : $this->pdo,
-            $pdoConfig,
-            fn (): UserInterface => $this->user
-        ), $pdoDatabase);
+        $prop = new ReflectionProperty($pdoDatabase, 'pdo');
+
+        if (isset($pdoConfig['dsn'])) {
+            self::assertNotSame($this->pdo, $prop->getValue($pdoDatabase));
+        } else {
+            self::assertSame($this->pdo, $prop->getValue($pdoDatabase));
+        }
     }
 }

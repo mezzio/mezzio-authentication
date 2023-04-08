@@ -6,9 +6,10 @@ namespace MezzioTest\Authentication;
 
 use Mezzio\Authentication\DefaultUser;
 use Mezzio\Authentication\UserInterface;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 
-/** @covers \Mezzio\Authentication\DefaultUser */
+#[CoversClass(DefaultUser::class)]
 final class DefaultUserTest extends TestCase
 {
     public function testConstructor(): void

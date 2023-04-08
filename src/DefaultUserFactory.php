@@ -14,6 +14,7 @@ use Webmozart\Assert\Assert;
  */
 class DefaultUserFactory
 {
+    /** @psalm-suppress PossiblyUnusedParam */
     public function __invoke(ContainerInterface $container): callable
     {
         return static function (string $identity, array $roles = [], array $details = []): UserInterface {
