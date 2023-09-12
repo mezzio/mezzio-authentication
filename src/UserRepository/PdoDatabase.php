@@ -129,9 +129,9 @@ class PdoDatabase implements UserRepositoryInterface
             ));
         }
         if (false === $stmt) {
-            throw new Exception\RuntimeException(sprintf(
+            throw new Exception\RuntimeException(
                 'Error preparing retrieval of user roles: unknown error'
-            ));
+            );
         }
         $stmt->bindParam(':identity', $identity);
 
@@ -175,9 +175,9 @@ class PdoDatabase implements UserRepositoryInterface
             ));
         }
         if (false === $stmt) {
-            throw new Exception\RuntimeException(sprintf(
+            throw new Exception\RuntimeException(
                 'Error preparing retrieval of user details: unknown error'
-            ));
+            );
         }
         $stmt->bindParam(':identity', $identity);
 
