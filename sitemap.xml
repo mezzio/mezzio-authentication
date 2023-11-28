@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url>
-     <loc>https://docs.mezzio.dev/mezzio-authentication/</loc>
-     <lastmod>2020-11-03</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://docs.mezzio.dev/mezzio-authentication/v1/intro/</loc>
-     <lastmod>2020-11-03</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://docs.mezzio.dev/mezzio-authentication/v1/auth-adapter/</loc>
-     <lastmod>2020-11-03</lastmod>
-     <changefreq>daily</changefreq>
-    </url><url>
-     <loc>https://docs.mezzio.dev/mezzio-authentication/v1/user-repository/</loc>
-     <lastmod>2020-11-03</lastmod>
-     <changefreq>daily</changefreq>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://docs.mezzio.dev/mezzio-authentication/</loc>
+         <lastmod>2023-11-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.mezzio.dev/mezzio-authentication/v1/auth-adapter/</loc>
+         <lastmod>2023-11-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.mezzio.dev/mezzio-authentication/v1/intro/</loc>
+         <lastmod>2023-11-28</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://docs.mezzio.dev/mezzio-authentication/v1/user-repository/</loc>
+         <lastmod>2023-11-28</lastmod>
+         <changefreq>daily</changefreq>
     </url>
 </urlset>
