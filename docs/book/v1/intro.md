@@ -136,8 +136,8 @@ You need to specify the service for authentication using the name
 using the service name `Mezzio\Authentication\UserRepositoryInterface::class`.
 
 For instance, using `laminas-servicemanager` you can easily configure these two
-services using `aliases`. Below is an example of configuration using the *HTTP
-Basic Access Authentication* adapter and the *htpasswd* file as the user
+services using `aliases`. Below is an example of configuration using the _HTTP
+Basic Access Authentication_ adapter and the _htpasswd_ file as the user
 repository.
 
 ```php
