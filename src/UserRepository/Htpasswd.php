@@ -16,7 +16,7 @@ use function file_exists;
 use function fopen;
 use function password_verify;
 use function sprintf;
-use function strpos;
+use function str_starts_with;
 use function trim;
 
 /**
@@ -27,7 +27,7 @@ use function trim;
  */
 class Htpasswd implements UserRepositoryInterface
 {
-    private string $filename;
+    private readonly string $filename;
 
     /**
      * @var callable
@@ -98,7 +98,7 @@ class Htpasswd implements UserRepositoryInterface
      */
     protected function checkBcryptHash(string $hash): void
     {
-        if (0 !== strpos($hash, '$2y$')) {
+        if (! str_starts_with($hash, '$2y$')) {
             throw new Exception\RuntimeException(
                 'The htpasswd file uses not secure hash algorithm. Please use bcrypt.'
             );

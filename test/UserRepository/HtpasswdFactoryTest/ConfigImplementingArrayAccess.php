@@ -19,15 +19,11 @@ use function is_string;
  */
 final class ConfigImplementingArrayAccess implements ArrayAccess
 {
-    /** @var array<array-key,mixed> */
-    private array $data;
-
     /**
-     * @param array<string,mixed> $data
+     * @param array<array-key,mixed> $data
      */
-    public function __construct(array $data)
+    public function __construct(private array $data)
     {
-        $this->data = $data;
     }
 
     /**

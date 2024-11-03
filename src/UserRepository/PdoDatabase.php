@@ -13,7 +13,7 @@ use Webmozart\Assert\Assert;
 
 use function password_verify;
 use function sprintf;
-use function strpos;
+use function str_contains;
 
 /**
  * Adapter for PDO database
@@ -22,11 +22,6 @@ use function strpos;
  */
 class PdoDatabase implements UserRepositoryInterface
 {
-    private PDO $pdo;
-
-    /** @psalm-var array<string, mixed> */
-    private $config;
-
     /**
      * @var callable
      * @psalm-var callable(string, array<int|string, string>, array<string, mixed>): UserInterface
@@ -38,13 +33,11 @@ class PdoDatabase implements UserRepositoryInterface
      * @psalm-param callable(string, array<int|string, string>, array<string, mixed>): UserInterface $userFactory
      */
     public function __construct(
-        PDO $pdo,
-        array $config,
+        private readonly PDO $pdo,
+        /** @psalm-var array<string, mixed> */
+        private array $config,
         callable $userFactory
     ) {
-        $this->pdo    = $pdo;
-        $this->config = $config;
-
         // Provide type safety for the composed user factory.
         $this->userFactory = static function (
             string $identity,
@@ -114,7 +107,7 @@ class PdoDatabase implements UserRepositoryInterface
 
         Assert::string($this->config['sql_get_roles']);
 
-        if (false === strpos($this->config['sql_get_roles'], ':identity')) {
+        if (! str_contains($this->config['sql_get_roles'], ':identity')) {
             throw new Exception\InvalidConfigException(
                 'The sql_get_roles configuration setting must include an :identity parameter'
             );
@@ -160,7 +153,7 @@ class PdoDatabase implements UserRepositoryInterface
 
         Assert::string($this->config['sql_get_details']);
 
-        if (false === strpos($this->config['sql_get_details'], ':identity')) {
+        if (! str_contains($this->config['sql_get_details'], ':identity')) {
             throw new Exception\InvalidConfigException(
                 'The sql_get_details configuration setting must include a :identity parameter'
             );

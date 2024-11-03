@@ -14,23 +14,17 @@ namespace Mezzio\Authentication;
  */
 final class DefaultUser implements UserInterface
 {
-    private string $identity;
-
-    /** @psalm-var array<int|string, string> */
-    private $roles;
-
-    /** @psalm-var array<string, mixed> */
-    private $details;
-
     /**
      * @psalm-param array<int|string, string> $roles
      * @psalm-param array<string, mixed> $details
      */
-    public function __construct(string $identity, array $roles = [], array $details = [])
-    {
-        $this->identity = $identity;
-        $this->roles    = $roles;
-        $this->details  = $details;
+    public function __construct(
+        private readonly string $identity,
+        /** @psalm-var array<int|string, string> */
+        private readonly array $roles = [],
+        /** @psalm-var array<string, mixed> */
+        private array $details = []
+    ) {
     }
 
     public function getIdentity(): string
