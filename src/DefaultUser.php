@@ -20,9 +20,7 @@ final class DefaultUser implements UserInterface
      */
     public function __construct(
         private readonly string $identity,
-        /** @psalm-var array<int|string, string> */
         private readonly array $roles = [],
-        /** @psalm-var array<string, mixed> */
         private array $details = []
     ) {
     }

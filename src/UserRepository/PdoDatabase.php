@@ -34,7 +34,6 @@ class PdoDatabase implements UserRepositoryInterface
      */
     public function __construct(
         private readonly PDO $pdo,
-        /** @psalm-var array<string, mixed> */
         private array $config,
         callable $userFactory
     ) {
