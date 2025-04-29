@@ -11,10 +11,12 @@ use Webmozart\Assert\Assert;
  * Produces a callable factory capable of itself producing a UserInterface
  * instance; this approach is used to allow substituting alternative user
  * implementations without requiring extensions to existing repositories.
+ *
+ * @final
  */
 class DefaultUserFactory
 {
-    /** @psalm-suppress PossiblyUnusedParam */
+    /** @psalm-suppress UnusedParam */
     public function __invoke(ContainerInterface $container): callable
     {
         return static function (string $identity, array $roles = [], array $details = []): UserInterface {

@@ -24,6 +24,8 @@ use function trim;
  * It supports only bcrypt hash password for security reason
  *
  * @see https://httpd.apache.org/docs/2.4/programs/htpasswd.html
+ *
+ * @final
  */
 class Htpasswd implements UserRepositoryInterface
 {
