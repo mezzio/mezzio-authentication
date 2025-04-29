@@ -12,6 +12,7 @@ use Webmozart\Assert\Assert;
 
 use function sprintf;
 
+/** @final */
 class HtpasswdFactory
 {
     /**

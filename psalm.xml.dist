@@ -17,14 +17,12 @@
     </projectFiles>
 
     <issueHandlers>
-        <!--
-        The PHPUnit Plugin cannot detect data providers referenced by PHP Attributes
-        -->
-        <PossiblyUnusedMethod>
+        <MissingOverrideAttribute>
             <errorLevel type="suppress">
+                <directory name="src" />
                 <directory name="test" />
             </errorLevel>
-        </PossiblyUnusedMethod>
+        </MissingOverrideAttribute>
     </issueHandlers>
 
     <plugins>

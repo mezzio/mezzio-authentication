@@ -7,6 +7,7 @@ namespace Mezzio\Authentication;
 use Psr\Container\ContainerInterface;
 use Webmozart\Assert\Assert;
 
+/** @final */
 class AuthenticationMiddlewareFactory
 {
     public function __invoke(ContainerInterface $container): AuthenticationMiddleware

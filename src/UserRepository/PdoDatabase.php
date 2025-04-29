@@ -19,6 +19,8 @@ use function str_contains;
  * Adapter for PDO database
  *
  * It supports only bcrypt password hashing for security reasons.
+ *
+ * @final
  */
 class PdoDatabase implements UserRepositoryInterface
 {

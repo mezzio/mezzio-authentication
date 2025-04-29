@@ -10,6 +10,7 @@ use PDO;
 use Psr\Container\ContainerInterface;
 use Webmozart\Assert\Assert;
 
+/** @final */
 class PdoDatabaseFactory
 {
     /**

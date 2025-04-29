@@ -24,6 +24,7 @@ final class ExceptionTest extends TestCase
         $namespace = substr(ExceptionInterface::class, 0, (int) strrpos(ExceptionInterface::class, '\\') + 1);
 
         $exceptions = glob(__DIR__ . '/../src/Exception/*.php');
+        self::assertIsArray($exceptions);
         foreach ($exceptions as $exception) {
             $class = substr(basename($exception), 0, -4);
 
